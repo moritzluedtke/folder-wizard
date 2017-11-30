@@ -1,5 +1,5 @@
 group 'de.moritzluedtke'
-version '0.1-ALPHA'
+version 'ALPHA_0.1'
 
 apply plugin: 'java'
 
@@ -7,11 +7,11 @@ sourceCompatibility = 1.9
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'AE_FileOrganizer',
+        attributes 'Implementation-Title': 'FileOrganizer',
                 'Implementation-Version': version,
                 'Main-Class': 'de.moritzluedtke.Starter'
     }
-    baseName = project.name + '-build'
+    baseName = project.name + '-BUILD'
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }
