@@ -2,11 +2,10 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            xmlns="http://javafx.com/javafx"
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
             fx:controller="de.moritzluedtke.gui.MainWindowController">
     <center>
-        <Label text="Hi"/>
+        <Label text="Hi ü"/>
     </center>
-
 </BorderPane>

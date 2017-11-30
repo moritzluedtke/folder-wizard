@@ -18,7 +18,6 @@ public class Starter extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         URL mainWindowUrl = ClassLoader.getSystemResource("layout/MainWindow.fxml");
-//        URL mainWindowUrl = getClass().getResource("/layout/MainWindow.fxml");
 
         createMainWindowGUI(primaryStage, mainWindowUrl).show();
     }
