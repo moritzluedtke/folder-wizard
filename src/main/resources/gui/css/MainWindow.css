@@ -1,0 +1,10 @@
+@font-face {
+src: url("/gui/font/barlow/Barlow-SemiBold.ttf");
+}
+
+.label {
+-fx-font-family: "Barlow SemiBold";
+-fx-font-size: 48;
+-fx-text-fill: #848C9C;
+-fx-effect: innershadow( gaussian , rgba(0,0,0,0.8) , 6 , 0.0 , 1 , 2 );
+}
