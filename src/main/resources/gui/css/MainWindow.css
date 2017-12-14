@@ -1,28 +1,20 @@
-/*-------------Barlow-------------*/
-@font-face {
-    src: url("/gui/font/barlow/Barlow-ExtraBold.ttf");
-}
-@font-face {
-    src: url("/gui/font/barlow/Barlow-SemiBold.ttf");
-}
-@font-face {
-    src: url("/gui/font/barlow/Barlow-Medium.ttf");
-}
-@font-face {
-    src: url("/gui/font/barlow/Barlow-Light.ttf");
-}
+/*-------------------Fonts-------------------*/
 
-/*-----------IndieFlower-----------*/
+
+/*-------------IndieFlower-------------*/
 @font-face {
     src: url("/gui/font/indie_flower/IndieFlower.ttf");
 }
 
-/*-------------Roboto-------------*/
+/*---------------Roboto---------------*/
 @font-face {
     src: url("/gui/font/roboto/Roboto-Black.ttf");
 }
 @font-face {
     src: url("/gui/font/roboto/Roboto-Bold.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-BoldItalic.ttf");
 }
 @font-face {
     src: url("/gui/font/roboto/Roboto-Medium.ttf");
@@ -41,19 +33,39 @@
 }
 
 
+/*-------------------Style Classes-------------------*/
 
-/*-------------Style Classes-------------*/
+/*---------------General---------------*/
 .background {
     -fx-background-color: #F5F5F5;
 }
 
+.header-banner {
+    -fx-background-color: #004ba0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
+}
+
+.main-content-area {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .3), 8, 0, 2, 2); /* Slight Float*/
+    /*-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .4), 25, 0, 6, 6); STRONG FLOAT*/
+}
+
+/*---------------Label---------------*/
 .header-label {
     -fx-font-family: "Roboto Bold";
     -fx-font-size: 62;
-    -fx-text-fill: #004ba0;
+    -fx-text-fill: #FFFFFF;
 
-    /*-fx-text-fill: #848C9C;
-    -fx-effect: innershadow( gaussian , rgba(0,0,0,0.8) , 6 , 0.0 , 1 , 2 );*/
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 4, 4);
+}
+
+.header-sublabel {
+    -fx-font-family: "Roboto Light";
+    -fx-font-size: 20;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 6, 0, 2, 2);
 }
 
 .signature-label {
@@ -62,6 +74,7 @@
     -fx-text-fill: #BBBBBB;
 }
 
+/*---------------Button---------------*/
 .button-large-main-createFileFolder {
     -fx-padding: 0.7em 0.57em;
     -jfx-button-type: RAISED;

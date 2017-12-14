@@ -1,0 +1,9 @@
+Name:
++Folder Wizard
+File Wizard
++Forga (File/Folder Organizer)
+Folder-Boy
+
+Subtitle:
+Make Folders great again!
+Yes, you can (now)

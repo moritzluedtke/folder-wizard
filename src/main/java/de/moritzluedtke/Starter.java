@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
@@ -14,8 +15,9 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Starter extends Application {
-	public final int MAIN_WINDOW_WIDTH = 900;
-	public final int MAIN_WINDOW_HEIGHT = 570;
+	public static final int MAIN_WINDOW_WIDTH = 900;
+	public static final int MAIN_WINDOW_HEIGHT = 570;
+	private static final String PATH_TO_WINDOW_ICON = "gui/icon/black/ic_b_new_folder.png";
 	
 	private static final Logger log = LogManager.getLogger();
 	
@@ -27,6 +29,8 @@ public class Starter extends Application {
 	/**
 	 * JavaFX start method. Loads the FXML layout file into a URL
 	 * and gives that to the method which creates the primary stage.
+	 * <p>
+	 * Also enables font smoothing.
 	 *
 	 * @param primaryStage	takes the primary stage from the JavaFX framework
 	 * @throws Exception	generic exception when something goes wrong
@@ -47,7 +51,8 @@ public class Starter extends Application {
 	/**
 	 * Creates the primary stage based upon the given {@link URL} to the FXML file.
 	 * <p>
-	 * This centers the stage too.
+	 * Also sets the window logo, centers the stage & sets resizable to false.
+	 *
 	 * @param primaryStage	the primary stage
 	 * @param resourceURL	takes the path to the FXML file
 	 * @return				the created primary stage
@@ -58,6 +63,8 @@ public class Starter extends Application {
 			primaryStage.setTitle("FileOrganizer - by Moritz Lüdtke");
 			primaryStage.setScene(new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT));
 			primaryStage.setResizable(false);
+			
+			setWindowIcon(primaryStage);
 		} catch (IOException e) {
 			log.error("Can't create primary stage! Might be an invalid URL.");
 		}
@@ -67,6 +74,9 @@ public class Starter extends Application {
 		return primaryStage;
 	}
 	
+	private void setWindowIcon(Stage primaryStage) {
+		primaryStage.getIcons().add(new Image(PATH_TO_WINDOW_ICON));
+	}
 	
 	private void enableFontSmoothing() {
 		System.setProperty("prism.lcdtext", "false");
