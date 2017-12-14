@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Starter extends Application {
-	public final int MAIN_WINDOW_WIDTH = 800;
-	public final int MAIN_WINDOW_HEIGHT = 500;
+	public final int MAIN_WINDOW_WIDTH = 900;
+	public final int MAIN_WINDOW_HEIGHT = 570;
 	
 	private static final Logger log = LogManager.getLogger();
 	

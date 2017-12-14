@@ -1,32 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<BorderPane xmlns="http://javafx.com/javafx"
-			xmlns:fx="http://javafx.com/fxml"
-			fx:controller="de.moritzluedtke.gui.MainWindowController"
-			stylesheets="@../css/MainWindow.css">
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<BorderPane styleClass="background" stylesheets="@../css/MainWindow.css" xmlns="http://javafx.com/javafx/8.0.121"
+			xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.moritzluedtke.gui.MainWindowController">
 	
 	<top>
-		<Label fx:id="titleLabel"
-			   alignment="CENTER" prefHeight="50"
-			   text="File Organizer v0.1" BorderPane.alignment="CENTER">
-		</Label>
+		<VBox alignment="CENTER">
+			<Label text="File Organizer"
+				   alignment="CENTER" prefHeight="80" maxHeight="80"
+				   styleClass="header-label"
+				   BorderPane.alignment="CENTER">
+			</Label>
+		</VBox>
 	</top>
 	
-	<left>
-		<Button text="Create/Delete File(s)/Folder(s)"
-				BorderPane.alignment="CENTER"
-				alignment="CENTER"
-				prefWidth="200"/>
-	</left>
+	<center>
+		<HBox alignment="CENTER" spacing="50">
+			<JFXButton text="Create File/Folder"
+					   maxHeight="200" maxWidth="300"
+					   prefHeight="200"
+					   styleClass="button-large-main-createFileFolder" textAlignment="CENTER"
+					   focusTraversable="false" wrapText="true">
+				<graphic>
+					<ImageView fitWidth="50" fitHeight="50" >
+						<Image url="/gui/icon/white/ic_w_trashcan.png"/>
+					</ImageView>
+				</graphic>
+			</JFXButton>
+			<JFXButton text="Delete File/Folder"
+					   maxHeight="200" maxWidth="300"
+					   prefHeight="200"
+					   styleClass="button-large-main-deleteFileFolder" textAlignment="CENTER"
+					   focusTraversable="false" wrapText="true">
+				<graphic>
+					<ImageView fitWidth="50" fitHeight="50" >
+						<Image url="/gui/icon/white/ic_w_trashcan.png"/>
+					</ImageView>
+				</graphic>
+			</JFXButton>
+			<JFXButton text="Create Folder Structure by File"
+					   maxHeight="200" maxWidth="300"
+					   prefHeight="200"
+					   styleClass="button-large-main-createFolderStructure" textAlignment="CENTER"
+					   focusTraversable="false" wrapText="true"/>
+		</HBox>
+		
+		<!--<VBox alignment="CENTER" spacing="25">-->
+		<!--<JFXButton text="Create File/Folder"-->
+		<!--maxHeight="80" maxWidth="300"-->
+		<!--prefHeight="80"-->
+		<!--styleClass="button-raised"-->
+		<!--focusTraversable="false"/>-->
+		<!--<JFXButton text="Delete File/Folder"-->
+		<!--maxHeight="80" maxWidth="300"-->
+		<!--styleClass="button-raised"-->
+		<!--prefHeight="80"-->
+		<!--focusTraversable="false"-->
+		<!--/>-->
+		<!--<JFXButton text="Create Folder Structure by File"-->
+		<!--maxHeight="120" maxWidth="300"-->
+		<!--prefHeight="120"-->
+		<!--styleClass="button-raised"-->
+		<!--textAlignment="CENTER"-->
+		<!--focusTraversable="false" wrapText="true"-->
+		<!--/>-->
+		<!--</VBox>-->
+	</center>
 	
-	<right>
-		<Button text="Create Folder Structure by File"
-				BorderPane.alignment="CENTER"
-				alignment="CENTER"
-				prefWidth="200"/>
-	</right>
+	<bottom>
+		<Label text="created by Moritz Lüdtke"
+			   prefHeight="45"
+			   styleClass="signature-label"
+			   alignment="CENTER" BorderPane.alignment="CENTER"/>
+	</bottom>
 
 </BorderPane>

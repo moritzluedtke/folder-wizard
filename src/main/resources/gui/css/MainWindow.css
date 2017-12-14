@@ -1,10 +1,105 @@
+/*-------------Barlow-------------*/
 @font-face {
-src: url("/gui/font/barlow/Barlow-SemiBold.ttf");
+    src: url("/gui/font/barlow/Barlow-ExtraBold.ttf");
+}
+@font-face {
+    src: url("/gui/font/barlow/Barlow-SemiBold.ttf");
+}
+@font-face {
+    src: url("/gui/font/barlow/Barlow-Medium.ttf");
+}
+@font-face {
+    src: url("/gui/font/barlow/Barlow-Light.ttf");
 }
 
-.label {
--fx-font-family: "Barlow SemiBold";
--fx-font-size: 48;
--fx-text-fill: #848C9C;
--fx-effect: innershadow( gaussian , rgba(0,0,0,0.8) , 6 , 0.0 , 1 , 2 );
+/*-----------IndieFlower-----------*/
+@font-face {
+    src: url("/gui/font/indie_flower/IndieFlower.ttf");
+}
+
+/*-------------Roboto-------------*/
+@font-face {
+    src: url("/gui/font/roboto/Roboto-Black.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-Bold.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-Medium.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-MediumItalic.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-Light.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-LightItalic.ttf");
+}
+@font-face {
+    src: url("/gui/font/roboto/Roboto-Thin.ttf");
+}
+
+
+
+/*-------------Style Classes-------------*/
+.background {
+    -fx-background-color: #F5F5F5;
+}
+
+.header-label {
+    -fx-font-family: "Roboto Bold";
+    -fx-font-size: 62;
+    -fx-text-fill: #004ba0;
+
+    /*-fx-text-fill: #848C9C;
+    -fx-effect: innershadow( gaussian , rgba(0,0,0,0.8) , 6 , 0.0 , 1 , 2 );*/
+}
+
+.signature-label {
+    -fx-font-family: "Indie Flower";
+    -fx-font-size: 18;
+    -fx-text-fill: #BBBBBB;
+}
+
+.button-large-main-createFileFolder {
+    -fx-padding: 0.7em 0.57em;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #1976d2;
+    -fx-pref-width: 200;
+
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 24;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-content-display: top;
+        -fx-graphic-text-gap: 10;
+}
+
+.button-large-main-deleteFileFolder {
+    -fx-padding: 0.7em 0.57em;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #1976d2;
+    -fx-pref-width: 200;
+
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 24;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 10;
+}
+
+.button-large-main-createFolderStructure {
+    -fx-padding: 0.7em 0.57em;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #1976d2;
+    -fx-pref-width: 200;
+
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 24;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-content-display: top;
+        -fx-graphic-text-gap: 10;
 }
