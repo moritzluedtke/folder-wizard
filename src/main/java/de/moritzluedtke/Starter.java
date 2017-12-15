@@ -15,8 +15,8 @@ import java.io.IOException;
 import java.net.URL;
 
 public class Starter extends Application {
-	public static final int MAIN_WINDOW_WIDTH = 900;
-	public static final int MAIN_WINDOW_HEIGHT = 570;
+	private static final int MAIN_WINDOW_WIDTH = 900;
+	private static final int MAIN_WINDOW_HEIGHT = 570;
 	private static final String PATH_TO_WINDOW_ICON = "gui/icon/black/ic_b_new_folder.png";
 	
 	private static final Logger log = LogManager.getLogger();

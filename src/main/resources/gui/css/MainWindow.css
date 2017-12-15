@@ -1,6 +1,5 @@
 /*-------------------Fonts-------------------*/
 
-
 /*-------------IndieFlower-------------*/
 @font-face {
     src: url("/gui/font/indie_flower/IndieFlower.ttf");
@@ -40,8 +39,13 @@
     -fx-background-color: #F5F5F5;
 }
 
-.pane-header-banner {
+.bg-main-header-banner {
     -fx-background-color: #004ba0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
+}
+
+.bg-detail-area-header-banner {
+    -fx-background-color: #1976d2;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
 }
 
@@ -81,7 +85,9 @@
 
 .detail-area-header-title {
     -fx-font-family: "Roboto Medium";
-    -fx-font-size: 24
+    -fx-font-size: 42;
+    -fx-text-fill: #FFFFFF;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.75), 6, 0, 2, 2);
 }
 
 /*---------------Button---------------*/

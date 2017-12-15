@@ -18,37 +18,26 @@ public class MainWindowController {
 	
 	private static final Logger log = LogManager.getLogger();
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
-	private Boolean isDetailAreaVisible = false;
-	
+	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
 	
 	private enum Animate {
 		IN,
-		OUT;
-		
-		
+		OUT
 	}
+	
 	private enum Fade {
 		IN,
-		OUT;
-		
-		
+		OUT
 	}
+	
 	@FXML
 	public Pane paneDetailArea;
+	
 	@FXML
 	private Label labelHeaderTitle;
 	
 	@FXML
 	private Label labelHeaderSubtitle;
-	
-	@FXML
-	private JFXButton buttonCreate;
-	
-	@FXML
-	private JFXButton buttonDelete;
-	
-	@FXML
-	private JFXButton buttonCreateByStructure;
 	
 	@FXML
 	public JFXButton buttonDetailAreaClose;
@@ -109,13 +98,9 @@ public class MainWindowController {
 		if (animationDirection == Animate.IN) {
 			fadeHeaderTitle(Fade.OUT);
 			animateDetailArea(Animate.IN);
-			
-			isDetailAreaVisible = true;
 		} else {
 			fadeHeaderTitle(Fade.IN);
 			animateDetailArea(Animate.OUT);
-			
-			isDetailAreaVisible = false;
 		}
 	}
 	
@@ -129,13 +114,13 @@ public class MainWindowController {
 				= new TranslateTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), paneDetailArea);
 		
 		if (animationDirection == Animate.IN) {
-			translateTransition.setByY(-540);
+			translateTransition.setByY(- DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
 			translateTransition.setCycleCount(1);
 			translateTransition.setAutoReverse(false);
 			
 			translateTransition.play();
 		} else {
-			translateTransition.setByY(540);
+			translateTransition.setByY(DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
 			translateTransition.setCycleCount(1);
 			translateTransition.setAutoReverse(false);
 			
