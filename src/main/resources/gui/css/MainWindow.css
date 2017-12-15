@@ -40,9 +40,14 @@
     -fx-background-color: #F5F5F5;
 }
 
-.header-banner {
+.pane-header-banner {
     -fx-background-color: #004ba0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
+}
+
+.detail-area {
+    -fx-background-color: #FFFFFF;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .55), 25, 0, 5, 5);
 }
 
 .main-content-area {
@@ -72,6 +77,11 @@
     -fx-font-family: "Indie Flower";
     -fx-font-size: 18;
     -fx-text-fill: #BBBBBB;
+}
+
+.detail-area-header-title {
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 24
 }
 
 /*---------------Button---------------*/

@@ -27,7 +27,7 @@ public class Starter extends Application {
 	}
 	
 	/**
-	 * JavaFX start method. Loads the FXML layout file into a URL
+	 * JavaFX start method. Creates a {@link URL} to the FXML file
 	 * and gives that to the method which creates the primary stage.
 	 * <p>
 	 * Also enables font smoothing.
