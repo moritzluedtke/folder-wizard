@@ -75,7 +75,7 @@
 	<BorderPane maxWidth="800" maxHeight="540" fx:id="paneDetailArea" styleClass="detail-area" translateY="570">
 		<top>
 			<StackPane>
-				<Pane styleClass="bg-detail-area-header-banner"/>
+				<!--<Pane styleClass="bg-detail-area-header-banner"/>-->
 				<Label text="Create File/Folder"
 					   styleClass="detail-area-header-title"
 					   alignment="CENTER" BorderPane.alignment="CENTER"/>

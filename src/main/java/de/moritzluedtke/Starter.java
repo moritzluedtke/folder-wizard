@@ -17,11 +17,14 @@ import java.net.URL;
 public class Starter extends Application {
 	private static final int MAIN_WINDOW_WIDTH = 900;
 	private static final int MAIN_WINDOW_HEIGHT = 570;
-	private static final String PATH_TO_WINDOW_ICON = "gui/icon/black/ic_b_new_folder.png";
+	private static final String PATH_TO_WINDOW_ICON = "gui/icon/window/ic_window_v7.png";
 	
 	private static final Logger log = LogManager.getLogger();
 	
-	
+	/**
+	 * Main method used to start the GUI.
+	 * @param args takes arguments from the command line
+	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
