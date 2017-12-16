@@ -51,7 +51,7 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void clickedButtonCreate(ActionEvent actionEvent) {
+	public void handleButtonCreateClicked(ActionEvent actionEvent) {
 		log.info("buttonCreate clicked");
 		showDetailArea(Animate.IN);
 	}
@@ -61,8 +61,9 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void clickedButtonDelete(ActionEvent actionEvent) {
+	public void handleButtonDeleteClicked(ActionEvent actionEvent) {
 		log.info("buttonDelete clicked");
+		showDetailArea(Animate.IN);
 	}
 	
 	/**
@@ -70,16 +71,25 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void clickedButtonCreateByStructure(ActionEvent actionEvent) {
+	public void handleButtonCreateByFMLClicked(ActionEvent actionEvent) {
 		log.info("buttonCreateByStructure clicked");
+		showDetailArea(Animate.IN);
 	}
 	
+	/**
+	 * Handles the onAction event when the close button in the details area is clicked.
+	 * @param actionEvent the action event provided by the button
+	 */
 	@FXML
 	public void handleDetailAreaCloseButtonClicked(ActionEvent actionEvent) {
 		log.info("detail area close BUTTON clicked");
 		showDetailArea(Animate.OUT);
 	}
 	
+	/**
+	 * Handles the mouse clicked event when the "created by" label in the main menu is clicked.
+	 * @param mouseEvent the action event provided by the button
+	 */
 	@FXML
 	public void handleLabelCreatedByMainMenuClicked(MouseEvent mouseEvent) {
 		log.info("label created by clicked");
@@ -107,7 +117,7 @@ public class MainWindowController {
 	/**
 	 * Animates the detail area into the front by bringing it up from the bottom or animating it down.
 	 * @param animationDirection Animate.IN = Animating nodes into the scene;
-	 *                           Animate.OUT = Animating nodes out of the scene;
+	 *                           Animate.OUT = Animating nodes out of the scene
 	 */
 	private void animateDetailArea(Animate animationDirection) {
 		TranslateTransition translateTransition
