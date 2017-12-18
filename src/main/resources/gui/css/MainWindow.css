@@ -89,6 +89,17 @@
     -fx-text-fill: #BBBBBB;
 }
 
+.about-dialog-title {
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 32;
+    -fx-text-fill: #004ba0;
+}
+
+.about-dialog-content-text {
+    -fx-font-family: "Roboto Light";
+    -fx-font-size: 16;
+}
+
 .detail-area-header-title {
     -fx-font-family: "Roboto Medium";
     -fx-font-size: 42;
@@ -97,35 +108,7 @@
 }
 
 /*---------------Button---------------*/
-.button-large-main-createFileFolder {
-    -fx-padding: 0.7em 0.57em;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #1976d2;
-    -fx-pref-width: 200;
-
-    -fx-font-family: "Roboto Medium";
-    -fx-font-size: 24;
-    -fx-text-fill: #FFFFFF;
-
-    -fx-content-display: top;
-    -fx-graphic-text-gap: 10;
-}
-
-.button-large-main-deleteFileFolder {
-    -fx-padding: 0.7em 0.57em;
-    -jfx-button-type: RAISED;
-    -fx-background-color: #1976d2;
-    -fx-pref-width: 200;
-
-    -fx-font-family: "Roboto Medium";
-    -fx-font-size: 24;
-    -fx-text-fill: #FFFFFF;
-
-    -fx-content-display: top;
-    -fx-graphic-text-gap: 10;
-}
-
-.button-large-main-createFolderStructure {
+.button-large-main-menu {
     -fx-padding: 0.7em 0.57em;
     -jfx-button-type: RAISED;
     -fx-background-color: #1976d2;

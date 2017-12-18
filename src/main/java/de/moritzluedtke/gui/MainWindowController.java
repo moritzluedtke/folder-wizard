@@ -1,14 +1,16 @@
 package de.moritzluedtke.gui;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDialog;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,19 +18,43 @@ import org.apache.logging.log4j.Logger;
 
 public class MainWindowController {
 	
-	private static final Logger log = LogManager.getLogger();
-	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
-	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
+
 	
 	private enum Animate {
 		IN,
-		OUT
+		OUT;
 	}
+
 	
 	private enum Fade {
 		IN,
-		OUT
+		OUT;
 	}
+	private static final Logger log = LogManager.getLogger();
+	
+	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
+	
+	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
+	private static final String ABOUT_DIALOG_CONTENT_TEXT
+			= "File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
+			"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
+			"\n\n" +
+			"Die Hauptfunktionen sind:\n" +
+			"- Erstellen/Löschen von Dateien und Ordner nach bestimmten, frei definierbaren Namensmustern.\n" +
+			"- Erstellen von Ordnerstrukturen anhand von FML (Folder Modelling Language) Dateien.\n" +
+			"  Diese Dateien definieren die Ordnerstruktur anhand einer eigenen Syntax.\n" +
+			"\n\n" +
+			"Benutzte Technologien:\n" +
+			"- Java 8 + JavaFX 2\n" +
+			"- JFoenix (Material Design Library für JavaFX)\n" +
+			"- Logfj2 (Logging Framework)\n" +
+			"- Gradle (Build-Management-Automatisierungs-Tool, wie Maven)\n" +
+			"- IntelliJ 2017 Community & Professional\n" +
+			"- Bitbucket (Kostenloses Git Repository)\n" +
+			"\n" +
+			"© 2018 Moritz Lüdtke";
+	@FXML
+	public StackPane rootStackPane;
 	
 	@FXML
 	public Pane paneDetailArea;
@@ -40,14 +66,18 @@ public class MainWindowController {
 	private Label labelHeaderSubtitle;
 	
 	@FXML
+	public Label labelAboutDialogContent;
+	
+	@FXML
 	public JFXButton buttonDetailAreaClose;
 	
 	@FXML
-	private Group borderPaneDetailAreaLayout;
+	public VBox aboutDialogContent;
 	
 	
 	/**
 	 * Handles the onAction Event, when the button "Create File/Folder" on the main menu is clicked.
+	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
@@ -58,16 +88,17 @@ public class MainWindowController {
 	
 	/**
 	 * Handles the onAction Event, when the button "Delete File/Folder" on the main menu is clicked.
+	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleButtonDeleteClicked(ActionEvent actionEvent) {
 		log.info("buttonDelete clicked");
-		showDetailArea(Animate.IN);
 	}
 	
 	/**
 	 * Handles the onAction Event, when the button "Create Folder by FML" on the main menu is clicked.
+	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
@@ -78,6 +109,7 @@ public class MainWindowController {
 	
 	/**
 	 * Handles the onAction event when the close button in the details area is clicked.
+	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
@@ -87,20 +119,61 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Handles the mouse clicked event when the "created by" label in the main menu is clicked.
+	 * Handles the onAction event which gets activated when the button "open root folder" in the detail area
+	 * is clicked
+	 * @param actionEvent the action event provided by the button
+	 */
+	@FXML
+	public void handleDetailAreaOpenRootFolderButtonClicked(ActionEvent actionEvent) {
+	
+	}
+	
+	/**
+	 * Handles the mouse click event when the "created by" label in the main menu is clicked.
+	 *
 	 * @param mouseEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleLabelCreatedByMainMenuClicked(MouseEvent mouseEvent) {
 		log.info("label created by clicked");
-		//TODO: Make Pop up for "Thank you" Message + Used Frameworks
-		//TODO: Or make that into an Info button in the lower right?
+		
+		showAboutDialog();
+	}
+	
+	/**
+	 * Handles the mouse click event when the header in the main menu is clicked.
+	 *
+	 * @param mouseEvent the action event provided by the button
+	 */
+	@FXML
+	public void handleHeaderMainMenuClick(MouseEvent mouseEvent) {
+		showAboutDialog();
+	}
+	
+	/**
+	 * Creates a dialog and show is on the screen.
+	 * Uses the content specified in the FXML file.
+	 * Goes on top of the content defined in the root StackPane.
+	 * <p>
+	 * Sets the opacity of the dialog content to 1 (full opacity). The Content needs to remain hidden before the dialog
+	 * appears. Otherwise it would be visible in the layout.
+	 */
+	private void showAboutDialog() {
+		JFXDialog dialog = new JFXDialog();
+		
+		aboutDialogContent.setOpacity(1);
+		labelAboutDialogContent.setText(ABOUT_DIALOG_CONTENT_TEXT);
+		
+		dialog.setContent(aboutDialogContent);
+		dialog.setDialogContainer(rootStackPane);
+		dialog.show();
 	}
 	
 	/**
 	 * Shows the detail Area by animating it into the scene.
 	 * <p>
 	 * Also hides the main title.
+	 *
 	 * @param animationDirection Animate.IN = Animating nodes into the scene;
 	 *                           Animate.OUT = Animating nodes out of the scene;
 	 */
@@ -116,6 +189,7 @@ public class MainWindowController {
 	
 	/**
 	 * Animates the detail area into the front by bringing it up from the bottom or animating it down.
+	 *
 	 * @param animationDirection Animate.IN = Animating nodes into the scene;
 	 *                           Animate.OUT = Animating nodes out of the scene
 	 */
@@ -124,7 +198,7 @@ public class MainWindowController {
 				= new TranslateTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), paneDetailArea);
 		
 		if (animationDirection == Animate.IN) {
-			translateTransition.setByY(- DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
+			translateTransition.setByY(-DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
 			translateTransition.setCycleCount(1);
 			translateTransition.setAutoReverse(false);
 			
@@ -140,6 +214,7 @@ public class MainWindowController {
 	
 	/**
 	 * Fades in/out the whole header title (incl. the subtitle).
+	 *
 	 * @param fade Fade.IN = Animating opacity from 0 - 1; Fade.OUT = Animating opacity from 1 - 0
 	 */
 	private void fadeHeaderTitle(Fade fade) {

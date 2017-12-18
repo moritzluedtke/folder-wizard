@@ -1,15 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.jfoenix.controls.JFXButton?>
-<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.shape.Line?>
 <StackPane styleClass="background" stylesheets="@../css/MainWindow.css" xmlns="http://javafx.com/javafx/8.0.144"
-		   xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.moritzluedtke.gui.MainWindowController">
+		   xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.moritzluedtke.gui.MainWindowController"
+		   fx:id="rootStackPane">
+	
+	<VBox fx:id="aboutDialogContent"
+		  alignment="CENTER"
+		  maxWidth="750" spacing="20" opacity="0">
+		<padding>
+			<Insets top="20" left="20" bottom="20" right="20"/>
+		</padding>
+		<Label text="Über File Wizard" textAlignment="CENTER"
+			   styleClass="about-dialog-title"/>
+		<Label fx:id="labelAboutDialogContent"
+			   styleClass="about-dialog-content-text" wrapText="true"/>
+	</VBox>
+	
 	<BorderPane>
 		<top>
-			<StackPane>
+			<StackPane onMouseClicked="#handleHeaderMainMenuClick">
 				<Pane styleClass="bg-main-header-banner" prefHeight="120"/>
 				<VBox alignment="CENTER">
 					<Label fx:id="labelHeaderTitle" text="Folder Wizard"
@@ -29,7 +43,7 @@
 						   onAction="#handleButtonCreateClicked"
 						   maxHeight="200" maxWidth="300"
 						   prefHeight="200"
-						   styleClass="button-large-main-createFileFolder" textAlignment="CENTER"
+						   styleClass="button-large-main-menu" textAlignment="CENTER"
 						   focusTraversable="false" wrapText="true">
 					<graphic>
 						<ImageView fitWidth="50" fitHeight="50">
@@ -41,7 +55,7 @@
 						   onAction="#handleButtonDeleteClicked"
 						   maxHeight="200" maxWidth="300"
 						   prefHeight="200"
-						   styleClass="button-large-main-deleteFileFolder" textAlignment="CENTER"
+						   styleClass="button-large-main-menu" textAlignment="CENTER"
 						   focusTraversable="false" wrapText="true">
 					<graphic>
 						<ImageView fitWidth="50" fitHeight="50">
@@ -53,7 +67,7 @@
 						   onAction="#handleButtonCreateByFMLClicked"
 						   maxHeight="200" maxWidth="300"
 						   prefHeight="200"
-						   styleClass="button-large-main-createFolderStructure" textAlignment="CENTER"
+						   styleClass="button-large-main-menu" textAlignment="CENTER"
 						   focusTraversable="false" wrapText="true">
 					<graphic>
 						<ImageView fitWidth="50" fitHeight="50">
@@ -94,5 +108,30 @@
 				</JFXButton>
 			</StackPane>
 		</top>
+		
+		<center>
+			<VBox>
+				<HBox>
+					<VBox>
+						<!--Label "Root Pfad" und Text Edit für die Rootpath Anzeige, Eingabe-->
+					</VBox>
+					<JFXButton onAction="#handleDetailAreaOpenRootFolderButtonClicked"
+							   ripplerFill="#bcbcbc">
+						<graphic>
+							<ImageView fitWidth="40" fitHeight="40">
+								<Image url="/gui/icon/ic_w_open_folder.png"/>
+							</ImageView>
+						</graphic>
+					</JFXButton>
+				</HBox>
+				
+				<!--Weitere HBoxen für die anderen Elemente z.B. Namenspattern Bildung-->
+			</VBox>
+		</center>
+		
+		<bottom>
+			<!--Create Button-->
+		</bottom>
 	</BorderPane>
+
 </StackPane>
