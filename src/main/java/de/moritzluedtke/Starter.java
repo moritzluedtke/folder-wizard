@@ -45,7 +45,7 @@ public class Starter extends Application {
 		enableFontSmoothing();
 		
 		if (mainWindowUrl == null) {
-			log.error("URL to FXML file is null! Check if the URL in the code is valid.");
+			log.error("URL to FXML file is null! Check if the URL in the java code is valid.");
 		} else {
 			createMainWindowGUI(primaryStage, mainWindowUrl).show();
 		}
@@ -56,7 +56,7 @@ public class Starter extends Application {
 	 * <p>
 	 * Also sets the window logo, centers the stage & sets resizable to false.
 	 *
-	 * @param primaryStage	the primary stage
+	 * @param primaryStage	takes the primary stage from the JavaFX framework
 	 * @param resourceURL	takes the path to the FXML file
 	 * @return				the created primary stage
 	 */
@@ -77,19 +77,34 @@ public class Starter extends Application {
 		return primaryStage;
 	}
 	
+	/**
+	 * Sets the Window Icon.
+	 *
+	 * @param primaryStage	takes the primary stage from the JavaFX framework
+	 */
 	private void setWindowIcon(Stage primaryStage) {
 		primaryStage.getIcons().add(new Image(PATH_TO_WINDOW_ICON));
 	}
 	
+	/**
+	 * Enables font smoothing for the application.
+	 */
 	private void enableFontSmoothing() {
 		System.setProperty("prism.lcdtext", "false");
 	}
 	
-	private void centerStage(Stage stage, int width, int height) {
+	/**
+	 * Centers the window to the screen.
+	 *
+	 * @param stage				the stage that should be centered
+	 * @param windowWidth		the windowWidth of the GUI window
+	 * @param windowHeight		the windowHeight of the GUI window
+	 */
+	private void centerStage(Stage stage, int windowWidth, int windowHeight) {
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
 		
-		stage.setX((screenBounds.getWidth() - width) / 2);
-		stage.setY((screenBounds.getHeight() - height) / 2);
+		stage.setX((screenBounds.getWidth() - windowWidth) / 2);
+		stage.setY((screenBounds.getHeight() - windowHeight) / 2);
 	}
 	
 }

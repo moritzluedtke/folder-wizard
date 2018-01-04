@@ -2,6 +2,7 @@ package de.moritzluedtke.gui;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXTextField;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -18,25 +19,22 @@ import org.apache.logging.log4j.Logger;
 
 public class MainWindowController {
 	
-
-	
 	private enum Animate {
 		IN,
-		OUT;
+		OUT
 	}
-
 	
 	private enum Fade {
 		IN,
-		OUT;
+		OUT
 	}
+	
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
-	
 	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
-	private static final String ABOUT_DIALOG_CONTENT_TEXT
-			= "File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
+	private static final String ABOUT_DIALOG_CONTENT_TEXT =
+			"File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
 			"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
 			"\n\n" +
 			"Die Hauptfunktionen sind:\n" +
@@ -53,6 +51,7 @@ public class MainWindowController {
 			"- Bitbucket (Kostenloses Git Repository)\n" +
 			"\n" +
 			"© 2018 Moritz Lüdtke";
+	
 	@FXML
 	public StackPane rootStackPane;
 	
@@ -60,19 +59,22 @@ public class MainWindowController {
 	public Pane paneDetailArea;
 	
 	@FXML
-	private Label labelHeaderTitle;
+	private Label labelHeaderTitleMainArea;
 	
 	@FXML
-	private Label labelHeaderSubtitle;
+	private Label labelHeaderSubtitleMainArea;
 	
 	@FXML
-	public Label labelAboutDialogContent;
+	public Label labelAboutDialogContentMainArea;
 	
 	@FXML
-	public JFXButton buttonDetailAreaClose;
+	public JFXButton buttonCloseDetailArea;
 	
 	@FXML
 	public VBox aboutDialogContent;
+	
+	@FXML
+	public JFXTextField rootPathTextFieldDetailArea;
 	
 	
 	/**
@@ -81,7 +83,7 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleButtonCreateClicked(ActionEvent actionEvent) {
+	public void handleMainAreaButtonCreateClicked(ActionEvent actionEvent) {
 		log.info("buttonCreate clicked");
 		showDetailArea(Animate.IN);
 	}
@@ -92,7 +94,7 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleButtonDeleteClicked(ActionEvent actionEvent) {
+	public void handleMainAreaButtonDeleteClicked(ActionEvent actionEvent) {
 		log.info("buttonDelete clicked");
 	}
 	
@@ -102,7 +104,7 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleButtonCreateByFMLClicked(ActionEvent actionEvent) {
+	public void handleMainAreaButtonCreateByFMLClicked(ActionEvent actionEvent) {
 		log.info("buttonCreateByStructure clicked");
 		showDetailArea(Animate.IN);
 	}
@@ -113,7 +115,7 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaCloseButtonClicked(ActionEvent actionEvent) {
+	public void handleDetailAreaButtonCloseClicked(ActionEvent actionEvent) {
 		log.info("detail area close BUTTON clicked");
 		showDetailArea(Animate.OUT);
 	}
@@ -124,7 +126,12 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaOpenRootFolderButtonClicked(ActionEvent actionEvent) {
+	public void handleDetailAreaButtonOpenRootFolderClicked(ActionEvent actionEvent) {
+	
+	}
+	
+	@FXML
+	public void handleDetailAreaButtonCreateClicked(ActionEvent actionEvent) {
 	
 	}
 	
@@ -162,7 +169,7 @@ public class MainWindowController {
 		JFXDialog dialog = new JFXDialog();
 		
 		aboutDialogContent.setOpacity(1);
-		labelAboutDialogContent.setText(ABOUT_DIALOG_CONTENT_TEXT);
+		labelAboutDialogContentMainArea.setText(ABOUT_DIALOG_CONTENT_TEXT);
 		
 		dialog.setContent(aboutDialogContent);
 		dialog.setDialogContainer(rootStackPane);
@@ -170,7 +177,7 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Shows the detail Area by animating it into the scene.
+	 * Shows the detail area by animating it into the scene.
 	 * <p>
 	 * Also hides the main title.
 	 *
@@ -179,10 +186,10 @@ public class MainWindowController {
 	 */
 	private void showDetailArea(Animate animationDirection) {
 		if (animationDirection == Animate.IN) {
-			fadeHeaderTitle(Fade.OUT);
+			fadeMainAreaHeader(Fade.OUT);
 			animateDetailArea(Animate.IN);
 		} else {
-			fadeHeaderTitle(Fade.IN);
+			fadeMainAreaHeader(Fade.IN);
 			animateDetailArea(Animate.OUT);
 		}
 	}
@@ -213,15 +220,15 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Fades in/out the whole header title (incl. the subtitle).
+	 * Fades in/out the whole header (incl. the subtitle).
 	 *
 	 * @param fade Fade.IN = Animating opacity from 0 - 1; Fade.OUT = Animating opacity from 1 - 0
 	 */
-	private void fadeHeaderTitle(Fade fade) {
+	private void fadeMainAreaHeader(Fade fade) {
 		FadeTransition fadeTransTitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderTitle);
+				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderTitleMainArea);
 		FadeTransition fadeTransSubtitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderSubtitle);
+				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderSubtitleMainArea);
 		
 		if (fade == Fade.IN) {
 			fadeTransTitle.setFromValue(0.0);

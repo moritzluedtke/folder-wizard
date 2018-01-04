@@ -67,7 +67,7 @@
 }
 
 /*---------------Label---------------*/
-.header-label {
+.header-label-main-area {
     -fx-font-family: "Roboto Bold";
     -fx-font-size: 62;
     -fx-text-fill: #FFFFFF;
@@ -75,7 +75,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 4, 4);
 }
 
-.header-sublabel {
+.header-sublabel-main-area {
     -fx-font-family: "Roboto Light";
     -fx-font-size: 20;
     -fx-text-fill: #FFFFFF;
@@ -83,7 +83,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 6, 0, 2, 2);
 }
 
-.signature-label {
+.signature-label-main-area {
     -fx-font-family: "Indie Flower";
     -fx-font-size: 18;
     -fx-text-fill: #BBBBBB;
@@ -100,11 +100,16 @@
     -fx-font-size: 16;
 }
 
-.detail-area-header-title {
+.header-title-detail-area {
     -fx-font-family: "Roboto Medium";
     -fx-font-size: 42;
     -fx-text-fill: #004ba0;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 2, 2);
+}
+
+.detail-area-label {
+    -fx-font-family: "Robot Medium";
+    -fx-font-size: 14;
 }
 
 /*---------------Button---------------*/
@@ -122,6 +127,20 @@
     -fx-graphic-text-gap: 10;
 }
 
-.button-detail-area-close {
+.button-detail-area {
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 1, 1);
+}
+
+.button-large-detail-area {
+-fx-padding: 0.7em 0.57em;
+    -jfx-button-type: RAISED;
+    -fx-background-color: #1976d2;
+    -fx-pref-width: 140;
+
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 24;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 10;
 }
