@@ -18,7 +18,7 @@
 		</padding>
 		<Label text="Über File Wizard" textAlignment="CENTER"
 			   styleClass="about-dialog-title"/>
-		<Label fx:id="labelAboutDialogContentMainArea"
+		<Label fx:id="labelMainAreaAboutDialogContent"
 			   styleClass="about-dialog-content-text" wrapText="true"/>
 	</VBox>
 	
@@ -29,11 +29,11 @@
 			<StackPane onMouseClicked="#handleHeaderMainMenuClick">
 				<Pane styleClass="bg-main-header-banner" prefHeight="120"/>
 				<VBox alignment="CENTER">
-					<Label fx:id="labelHeaderTitleMainArea" text="Folder Wizard"
+					<Label fx:id="labelMainAreaHeaderTitle" text="Folder Wizard"
 						   alignment="CENTER"
 						   styleClass="header-label-main-area"
 						   BorderPane.alignment="CENTER"/>
-					<Label fx:id="labelHeaderSubtitleMainArea" text="Du bist nur so gut, wie deine Ordnerstruktur!"
+					<Label fx:id="labelMainAreaHeaderSubtitle" text="Du bist nur so gut, wie deine Ordnerstruktur!"
 						   alignment="CENTER"
 						   styleClass="header-sublabel-main-area"/>
 				</VBox>
@@ -86,7 +86,7 @@
 		<bottom>
 			<VBox alignment="CENTER" translateY="-8">
 				<Label text="created by Moritz Lüdtke"
-					   onMouseClicked="#handleLabelCreatedByMainMenuClicked"
+					   onMouseClicked="#handleMainMenuLabelCreatedByClicked"
 					   styleClass="signature-label-main-area"/>
 			</VBox>
 		</bottom>
@@ -95,12 +95,12 @@
 	<!--Detail area-->
 	<BorderPane fx:id="paneDetailArea"
 				maxWidth="800" maxHeight="540"
-				styleClass="detail-area" translateY="570">
+				styleClass="detail-area-pane" translateY="570">
 		<!--Header-->
 		<top>
 			<StackPane>
 				<Label text="Create File/Folder"
-					   styleClass="header-title-detail-area"
+					   styleClass="detail-area-header-title"
 					   alignment="CENTER" BorderPane.alignment="CENTER"/>
 				<JFXButton fx:id="buttonCloseDetailArea"
 						   onAction="#handleDetailAreaButtonCloseClicked"
@@ -126,12 +126,16 @@
 				
 				<!--Root path selection-->
 				<HBox alignment="CENTER" spacing="10">
-					<VBox>
+					<VBox spacing="5">
 						<Label text="Specify root path:"
-							   styleClass="detail-area-label"/>
-						<JFXTextField fx:id="rootPathTextFieldDetailArea"
-									  styleClass=""
-									  prefWidth="350"/>
+							   styleClass="detail-area-title-label"/>
+						<JFXTextField fx:id="textFieldDetailAreaRootPath"
+									  onKeyReleased="#handleTextFieldDetailAreaRootPathUserInput"
+									  styleClass="detail-area-text-field"
+									  prefWidth="450"/>
+						<Label fx:id="labelDetailAreaRootPathMessage"
+							   styleClass="detail-area-label"
+							   opacity="0"/>
 					</VBox>
 					
 					<JFXButton onAction="#handleDetailAreaButtonOpenRootFolderClicked"
@@ -144,7 +148,9 @@
 					</JFXButton>
 				</HBox>
 				
-				<!--Weitere HBoxen für die anderen Elemente z.B. Namenspattern-Bildung-->
+				
+				<!--Weitere HBoxen für die anderen Elemente wie z.B. Namepattern-Building-->
+			
 			</VBox>
 		</center>
 		

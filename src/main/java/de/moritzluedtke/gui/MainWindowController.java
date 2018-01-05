@@ -8,16 +8,26 @@ import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 import javafx.util.Duration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+
 
 public class MainWindowController {
+	
+	private static final Logger log = LogManager.getLogger();
+	private static final String JAVA_FX_CSS_TEXT_FILL = "-fx-text-fill: ";
+	private static final String ROOT_PATH_MESSAGE_TEXT_SUCCESS = "This is a directory :)";
+	private static final String ROOT_PATH_MESSAGE_TEXT_ERROR = "Please specify a valid path to a directory!";
 	
 	private enum Animate {
 		IN,
@@ -29,7 +39,15 @@ public class MainWindowController {
 		OUT
 	}
 	
-	private static final Logger log = LogManager.getLogger();
+	private enum MessageType {
+		ERROR,
+		SUCCESS
+	}
+	
+	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory";
+	private static final String DIRECTORY_CHOOSER_DEFAULT_DIRECTORY = "c:/";
+	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
+	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
 	
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
 	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
@@ -59,13 +77,16 @@ public class MainWindowController {
 	public Pane paneDetailArea;
 	
 	@FXML
-	private Label labelHeaderTitleMainArea;
+	private Label labelMainAreaHeaderTitle;
 	
 	@FXML
-	private Label labelHeaderSubtitleMainArea;
+	private Label labelMainAreaHeaderSubtitle;
 	
 	@FXML
-	public Label labelAboutDialogContentMainArea;
+	public Label labelMainAreaAboutDialogContent;
+	
+	@FXML
+	public Label labelDetailAreaRootPathMessage;
 	
 	@FXML
 	public JFXButton buttonCloseDetailArea;
@@ -74,8 +95,13 @@ public class MainWindowController {
 	public VBox aboutDialogContent;
 	
 	@FXML
-	public JFXTextField rootPathTextFieldDetailArea;
+	public JFXTextField textFieldDetailAreaRootPath;
 	
+	
+	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FolderService auslagern? Bsp: directory validation in einem Folder Service.
+	// TODO: So wäre die Controller Klasse schöne schlank und alle Logik ist in einer extra Klasse.
+	
+	// TODO: Services planen, Vererbung muss rein wegen Aufgabenstellung. Lohnt sich eine eigene File Klasse, die die java.io.File erweitert?
 	
 	/**
 	 * Handles the onAction Event, when the button "Create File/Folder" on the main menu is clicked.
@@ -84,7 +110,6 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleMainAreaButtonCreateClicked(ActionEvent actionEvent) {
-		log.info("buttonCreate clicked");
 		showDetailArea(Animate.IN);
 	}
 	
@@ -95,7 +120,7 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleMainAreaButtonDeleteClicked(ActionEvent actionEvent) {
-		log.info("buttonDelete clicked");
+		showDetailArea(Animate.IN);
 	}
 	
 	/**
@@ -105,7 +130,6 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleMainAreaButtonCreateByFMLClicked(ActionEvent actionEvent) {
-		log.info("buttonCreateByStructure clicked");
 		showDetailArea(Animate.IN);
 	}
 	
@@ -116,23 +140,40 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleDetailAreaButtonCloseClicked(ActionEvent actionEvent) {
-		log.info("detail area close BUTTON clicked");
 		showDetailArea(Animate.OUT);
 	}
 	
 	/**
-	 * Handles the onAction event which gets activated when the button "open root folder" in the detail area
-	 * is clicked
+	 * Creates and shows a directory chooser. Writes the path of the selected directory into the text field.
+	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked(ActionEvent actionEvent) {
-	
+		DirectoryChooser dirChooser = new DirectoryChooser();
+		dirChooser.setTitle(DIRECTORY_CHOOSER_WINDOW_TITLE);
+		dirChooser.setInitialDirectory(new File(DIRECTORY_CHOOSER_DEFAULT_DIRECTORY));
+		
+		Window mainWindow = rootStackPane.getScene().getWindow();
+		File selectedDirectory = dirChooser.showDialog(mainWindow);
+		
+		if (selectedDirectory != null) {
+			if (selectedDirectory.isDirectory()) {
+				textFieldDetailAreaRootPath.setText(selectedDirectory.getAbsolutePath());
+				setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_SUCCESS, MessageType.SUCCESS);
+			}
+		}
 	}
 	
+	/**
+	 * Handles the onAction event which gets activated when the button "create" in the detail area
+	 * is clicked
+	 *
+	 * @param actionEvent the action event provided by the button
+	 */
 	@FXML
 	public void handleDetailAreaButtonCreateClicked(ActionEvent actionEvent) {
-	
+		log.info("Detail Area: \"Create\" clicked");
 	}
 	
 	/**
@@ -141,9 +182,7 @@ public class MainWindowController {
 	 * @param mouseEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleLabelCreatedByMainMenuClicked(MouseEvent mouseEvent) {
-		log.info("label created by clicked");
-		
+	public void handleMainMenuLabelCreatedByClicked(MouseEvent mouseEvent) {
 		showAboutDialog();
 	}
 	
@@ -158,6 +197,56 @@ public class MainWindowController {
 	}
 	
 	/**
+	 * Handles the event in that the user types something into the root path textfield.
+	 * Also validates
+	 *
+	 * @param inputMethodEvent the keyevent provided by the textfield
+	 */
+	@FXML
+	public void handleTextFieldDetailAreaRootPathUserInput(KeyEvent inputMethodEvent) {
+		String currentText = textFieldDetailAreaRootPath.getText();
+		
+		boolean pathIsDir = validateThatUserInputIsADirectory(currentText);
+		
+		if (pathIsDir) {
+			setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_SUCCESS, MessageType.SUCCESS);
+		} else {
+			setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_ERROR, MessageType.ERROR);
+		}
+	}
+	
+	/**
+	 * Validates that the path typed in by the user is a directory.
+	 *
+	 * @param 	userInput	the text that is currently stored in the text field
+	 * @return	return if the path points to a directory
+	 */
+	private boolean validateThatUserInputIsADirectory(String userInput) {
+		return new File(userInput).isDirectory();
+	}
+	
+	/**
+	 * Sets the text of the label in the detail area for the root path message and changes the color according to
+	 * the MessageType.
+	 *
+	 * @param text			the text of the label
+	 * @param messageType	SUCCESS = text color green | ERROR = text color red
+	 */
+	private void setLabelDetailAreaRootPathMessageText(String text, MessageType messageType) {
+		labelDetailAreaRootPathMessage.setOpacity(1);
+		labelDetailAreaRootPathMessage.setText(text);
+		
+		switch (messageType) {
+			case SUCCESS:
+				labelDetailAreaRootPathMessage.setStyle(JAVA_FX_CSS_TEXT_FILL + MESSAGE_TYPE_SUCCESS_COLOR);
+				break;
+			case ERROR:
+				labelDetailAreaRootPathMessage.setStyle(JAVA_FX_CSS_TEXT_FILL + MESSAGE_TYPE_ERROR_COLOR);
+				break;
+		}
+	}
+	
+	/**
 	 * Creates a dialog and show is on the screen.
 	 * Uses the content specified in the FXML file.
 	 * Goes on top of the content defined in the root StackPane.
@@ -169,7 +258,7 @@ public class MainWindowController {
 		JFXDialog dialog = new JFXDialog();
 		
 		aboutDialogContent.setOpacity(1);
-		labelAboutDialogContentMainArea.setText(ABOUT_DIALOG_CONTENT_TEXT);
+		labelMainAreaAboutDialogContent.setText(ABOUT_DIALOG_CONTENT_TEXT);
 		
 		dialog.setContent(aboutDialogContent);
 		dialog.setDialogContainer(rootStackPane);
@@ -226,9 +315,9 @@ public class MainWindowController {
 	 */
 	private void fadeMainAreaHeader(Fade fade) {
 		FadeTransition fadeTransTitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderTitleMainArea);
+				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelMainAreaHeaderTitle);
 		FadeTransition fadeTransSubtitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelHeaderSubtitleMainArea);
+				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelMainAreaHeaderSubtitle);
 		
 		if (fade == Fade.IN) {
 			fadeTransTitle.setFromValue(0.0);
@@ -250,4 +339,5 @@ public class MainWindowController {
 			fadeTransSubtitle.play();
 		}
 	}
+	
 }

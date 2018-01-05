@@ -55,7 +55,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
 }
 
-.detail-area {
+.detail-area-pane {
     -fx-background-color: #FFFFFF;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .55), 25, 0, 5, 5);
 }
@@ -100,7 +100,7 @@
     -fx-font-size: 16;
 }
 
-.header-title-detail-area {
+.detail-area-header-title {
     -fx-font-family: "Roboto Medium";
     -fx-font-size: 42;
     -fx-text-fill: #004ba0;
@@ -108,8 +108,13 @@
 }
 
 .detail-area-label {
-    -fx-font-family: "Robot Medium";
+    -fx-font-family: "Roboto Light";
     -fx-font-size: 14;
+}
+
+.detail-area-title-label {
+    -fx-font-family: "Roboto Medium";
+    -fx-font-size: 16;
 }
 
 /*---------------Button---------------*/
@@ -143,4 +148,11 @@
 
     -fx-content-display: top;
     -fx-graphic-text-gap: 10;
+}
+
+/*---------------Text Field---------------*/
+
+.detail-area-text-field {
+    -fx-font-family: "Roboto Light";
+    -fx-font-size: 14;
 }

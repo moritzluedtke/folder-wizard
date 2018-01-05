@@ -1,6 +1,7 @@
 package de.moritzluedtke;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -49,6 +50,18 @@ public class Starter extends Application {
 		} else {
 			createMainWindowGUI(primaryStage, mainWindowUrl).show();
 		}
+	}
+	
+	/**
+	 * Closes all GUI windows so that the program can really stop. Without the two method calls it sometimes can happen
+	 * that the programm still runs in the background although all GUI windows are closed.
+	 *
+	 * @throws Exception generic exception if something goes wrong
+	 */
+	@Override
+	public void stop() throws Exception {
+		Platform.exit();
+		System.exit(0);
 	}
 	
 	/**
