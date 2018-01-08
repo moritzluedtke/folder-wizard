@@ -2,14 +2,15 @@ package de.moritzluedtke.gui;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXMasonryPane;
 import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXToggleButton;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -60,7 +61,7 @@ public class MainWindowController {
 					"- Bitbucket (Kostenloses Git Repository)\n" +
 					"\n" +
 					"© 2018 Moritz Lüdtke";
-	
+		
 	private enum Animate {
 		IN,
 		OUT
@@ -82,14 +83,7 @@ public class MainWindowController {
 		CREATE_BY_FILE
 	}
 	
-	private enum Mode {
-		FILE,
-		FOLDER
-	}
-	
 	private DetailAreaSection activeDetailAreaSection;
-	private Mode activeMode = Mode.FILE;
-	
 	private boolean isRootPathValid = false;
 	private String selectedRootPath;
 	
@@ -115,16 +109,10 @@ public class MainWindowController {
 	public Label labelDetailAreaRootPathMessage;
 	
 	@FXML
-	public Label labelDetailAreaModeFile;
-	
-	@FXML
-	public Label labelDetailAreaModeFolder;
-	
-	@FXML
 	public JFXButton buttonDetailAreaExecute;
 	
 	@FXML
-	public JFXToggleButton toggleButtonDetailAreaMode;
+	public JFXMasonryPane masonryPaneDetailAreaNameBuilding;
 	
 	@FXML
 	public VBox aboutDialogContent;
@@ -144,6 +132,9 @@ public class MainWindowController {
 	 */
 	public void initialize() {
 		addGUIChangeListeners();
+		
+		HBox hBox = new HBox();
+		// TODO: Make Chip HBOX fit content
 	}
 	
 	/**
@@ -243,42 +234,13 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Sets the disbale property of the mode labels in the detail area according to the active Mode.
-	 */
-	private void changeDetailAreaModeLabelsDisableState() {
-		if (activeMode == Mode.FILE) {
-			labelDetailAreaModeFile.setDisable(false);
-			labelDetailAreaModeFolder.setDisable(true);
-		} else {
-			labelDetailAreaModeFile.setDisable(true);
-			labelDetailAreaModeFolder.setDisable(false);
-		}
-	}
-	
-	/**
 	 * Adds the GUI change listeners. These listenes get activated when the values they are listening to get changed.
-	 * <p/>
-	 * {@link MainWindowController#toggleButtonDetailAreaMode} Listener = Whenever the button gets clicked
-	 * the labels switch their disable state and {@link MainWindowController#activeMode} gets changed.
 	 * <p/>
 	 * {@link MainWindowController#textFieldDetailAreaRootPath} Listener = Whenever the text inside the Text Field
 	 * changes the new value will be check if it is a valid directory.
 	 * Also the message underneath the Text Field will be updated.
 	 */
 	private void addGUIChangeListeners() {
-		toggleButtonDetailAreaMode.selectedProperty().addListener(
-				(observable, oldValue, newValue) -> {
-					if (newValue) {
-						activeMode = Mode.FOLDER;
-						log.info("Folder");
-					} else {
-						activeMode = Mode.FILE;
-						log.info("File");
-					}
-					
-					changeDetailAreaModeLabelsDisableState();
-				});
-		
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					

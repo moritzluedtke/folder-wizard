@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -104,7 +104,7 @@
 					<Insets top="10"/>
 				</padding>
 				<JFXButton onAction="#handleDetailAreaButtonCloseClicked"
-						   styleClass="button-detail-area"
+						   styleClass="detail-area-button"
 						   maxWidth="50" maxHeight="50" translateX="-370"
 						   ripplerFill="#bcbcbc"
 						   focusTraversable="false">
@@ -132,7 +132,7 @@
 				<HBox alignment="CENTER" spacing="10">
 					<VBox spacing="5">
 						<Label text="Specify root path:"
-							   styleClass="label-detail-area-title"/>
+							   styleClass="detail-area-title"/>
 						<JFXTextField fx:id="textFieldDetailAreaRootPath"
 									  styleClass="text-field-detail-area"
 									  prefWidth="450"/>
@@ -151,23 +151,74 @@
 					</JFXButton>
 				</HBox>
 				
-				<!--File/Folder Selection-->
-				<HBox alignment="CENTER" spacing="10">
-					<Label fx:id="labelDetailAreaModeFile"
-						   text="File"
-						   styleClass="label-detail-area-title"/>
-					<JFXToggleButton fx:id="toggleButtonDetailAreaMode"
-									 focusTraversable="false"/>
-					<Label fx:id="labelDetailAreaModeFolder"
-						   text="Folder" disable="true"
-						   styleClass="label-detail-area-title"/>
-				</HBox>
-				
-				<HBox alignment="CENTER" spacing="10">
-				
-				</HBox>
-				
-				<!--Weitere HBoxen für die anderen Elemente wie z.B. Namepattern-Building-->
+				<!--Name building-->
+				<VBox alignment="CENTER" spacing="10">
+					<JFXMasonryPane fx:id="masonryPaneDetailAreaNameBuilding">
+					
+					</JFXMasonryPane>
+					
+					<!--One Chip-->
+					<HBox styleClass="detail-area-chip-background" spacing="5"
+						  maxHeight="25" alignment="CENTER">
+						<padding>
+							<Insets left="11"/>
+						</padding>
+						
+						<Label text="Folder" styleClass="detail-area-label"
+							   textAlignment="CENTER"/>
+						<JFXButton opacity="0.5"
+								   maxWidth="20" maxHeight="20"
+								   ripplerFill="#ababab"
+								   focusTraversable="false">
+							<graphic>
+								<ImageView fitWidth="20" fitHeight="20">
+									<Image url="/gui/icon/black/ic_b_close_circle.png"/>
+								</ImageView>
+							</graphic>
+						</JFXButton>
+					</HBox>
+					
+					<!--Add naming und numbering-->
+					<HBox spacing="10">
+						<!--Name-->
+						<VBox spacing="4">
+							<Label text="Custom Name:"
+								   styleClass="detail-area-label-bold"/>
+							<HBox>
+								<JFXTextField prefWidth="120"
+											  styleClass="text-field-detail-area"/>
+								<JFXButton maxWidth="30" maxHeight="30"
+										   ripplerFill="#ababab"
+										   focusTraversable="false">
+									<graphic>
+										<ImageView fitWidth="30" fitHeight="30">
+											<Image url="/gui/icon/black/ic_b_add_box.png"/>
+										</ImageView>
+									</graphic>
+								</JFXButton>
+							</HBox>
+						</VBox>
+						
+						<!--Number-->
+						<VBox spacing="4">
+							<Label text="Custom Name:"
+								   styleClass="detail-area-label-bold"/>
+							<HBox>
+								<JFXTextField prefWidth="120"
+											  styleClass="text-field-detail-area"/>
+								<JFXButton maxWidth="30" maxHeight="30"
+										   ripplerFill="#ababab"
+										   focusTraversable="false">
+									<graphic>
+										<ImageView fitWidth="30" fitHeight="30">
+											<Image url="/gui/icon/black/ic_b_add_box.png"/>
+										</ImageView>
+									</graphic>
+								</JFXButton>
+							</HBox>
+						</VBox>
+					</HBox>
+				</VBox>
 			
 			</VBox>
 		</center>
@@ -176,7 +227,7 @@
 		<bottom>
 			<HBox alignment="CENTER">
 				<padding>
-					<Insets bottom="20"/>
+					<Insets bottom="30"/>
 				</padding>
 				
 				<JFXButton fx:id="buttonDetailAreaExecute"
