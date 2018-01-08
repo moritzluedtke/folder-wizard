@@ -45,25 +45,15 @@
     -fx-background-color: #F5F5F5;
 }
 
-.bg-main-header-banner {
+.main-area-header-bg {
     -fx-background-color: #004ba0;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
 }
 
-.bg-detail-area-header-banner {
-    -fx-background-color: #1976d2;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .70), 10, 0, 0, 1);
-}
-
 .detail-area-pane {
-    -fx-background-color: #FFFFFF;
+    -fx-background-color: #F8F8F8;
+    -fx-background-radius: 2;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .55), 25, 0, 5, 5);
-}
-
-.main-content-area {
-    -fx-background-color: #FFFFFF;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .3), 8, 0, 2, 2); /* Slight Float*/
-    /*-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .4), 25, 0, 6, 6); STRONG FLOAT*/
 }
 
 /*---------------Label---------------*/
@@ -112,9 +102,9 @@
     -fx-font-size: 14;
 }
 
-.detail-area-title-label {
+.label-detail-area-title {
     -fx-font-family: "Roboto Medium";
-    -fx-font-size: 16;
+    -fx-font-size: 18;
 }
 
 /*---------------Button---------------*/
@@ -152,7 +142,7 @@
 
 /*---------------Text Field---------------*/
 
-.detail-area-text-field {
+.text-field-detail-area {
     -fx-font-family: "Roboto Light";
     -fx-font-size: 14;
 }

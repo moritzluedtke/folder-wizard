@@ -3,12 +3,12 @@ package de.moritzluedtke.gui;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
+import com.jfoenix.controls.JFXToggleButton;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -25,9 +25,41 @@ import java.io.File;
 public class MainWindowController {
 	
 	private static final Logger log = LogManager.getLogger();
+	
 	private static final String JAVA_FX_CSS_TEXT_FILL = "-fx-text-fill: ";
 	private static final String ROOT_PATH_MESSAGE_TEXT_SUCCESS = "This is a directory :)";
 	private static final String ROOT_PATH_MESSAGE_TEXT_ERROR = "Please specify a valid path to a directory!";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/Folder";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/Folder";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create Folder by File";
+	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
+	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
+	public static final String BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE = "Create!";
+	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory";
+	
+	private static final String DIRECTORY_CHOOSER_DEFAULT_DIRECTORY = "c:/";
+	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
+	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
+	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
+	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 550;
+	private static final String ABOUT_DIALOG_CONTENT_TEXT =
+			"File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
+					"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
+					"\n\n" +
+					"Die Hauptfunktionen sind:\n" +
+					"- Erstellen/Löschen von Dateien und Ordner nach bestimmten, frei definierbaren Namensmustern.\n" +
+					"- Erstellen von Ordnerstrukturen anhand von FML (Folder Modelling Language) Dateien.\n" +
+					"  Diese Dateien definieren die Ordnerstruktur anhand einer eigenen Syntax.\n" +
+					"\n\n" +
+					"Benutzte Technologien:\n" +
+					"- Java 8 + JavaFX 2\n" +
+					"- JFoenix (Material Design Library für JavaFX)\n" +
+					"- Logfj2 (Logging Framework)\n" +
+					"- Gradle (Build-Management-Automatisierungs-Tool, wie Maven)\n" +
+					"- IntelliJ 2017 Community & Professional\n" +
+					"- Bitbucket (Kostenloses Git Repository)\n" +
+					"\n" +
+					"© 2018 Moritz Lüdtke";
 	
 	private enum Animate {
 		IN,
@@ -44,31 +76,22 @@ public class MainWindowController {
 		SUCCESS
 	}
 	
-	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory";
-	private static final String DIRECTORY_CHOOSER_DEFAULT_DIRECTORY = "c:/";
-	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
-	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
+	private enum DetailAreaSection {
+		CREATE,
+		DELETE,
+		CREATE_BY_FILE
+	}
 	
-	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
-	private static final int DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS = 550;
-	private static final String ABOUT_DIALOG_CONTENT_TEXT =
-			"File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
-			"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
-			"\n\n" +
-			"Die Hauptfunktionen sind:\n" +
-			"- Erstellen/Löschen von Dateien und Ordner nach bestimmten, frei definierbaren Namensmustern.\n" +
-			"- Erstellen von Ordnerstrukturen anhand von FML (Folder Modelling Language) Dateien.\n" +
-			"  Diese Dateien definieren die Ordnerstruktur anhand einer eigenen Syntax.\n" +
-			"\n\n" +
-			"Benutzte Technologien:\n" +
-			"- Java 8 + JavaFX 2\n" +
-			"- JFoenix (Material Design Library für JavaFX)\n" +
-			"- Logfj2 (Logging Framework)\n" +
-			"- Gradle (Build-Management-Automatisierungs-Tool, wie Maven)\n" +
-			"- IntelliJ 2017 Community & Professional\n" +
-			"- Bitbucket (Kostenloses Git Repository)\n" +
-			"\n" +
-			"© 2018 Moritz Lüdtke";
+	private enum Mode {
+		FILE,
+		FOLDER
+	}
+	
+	private DetailAreaSection activeDetailAreaSection;
+	private Mode activeMode = Mode.FILE;
+	
+	private boolean isRootPathValid = false;
+	private String selectedRootPath;
 	
 	@FXML
 	public StackPane rootStackPane;
@@ -86,10 +109,22 @@ public class MainWindowController {
 	public Label labelMainAreaAboutDialogContent;
 	
 	@FXML
+	public Label labelDetailAreaTitle;
+	
+	@FXML
 	public Label labelDetailAreaRootPathMessage;
 	
 	@FXML
-	public JFXButton buttonCloseDetailArea;
+	public Label labelDetailAreaModeFile;
+	
+	@FXML
+	public Label labelDetailAreaModeFolder;
+	
+	@FXML
+	public JFXButton buttonDetailAreaExecute;
+	
+	@FXML
+	public JFXToggleButton toggleButtonDetailAreaMode;
 	
 	@FXML
 	public VBox aboutDialogContent;
@@ -97,39 +132,50 @@ public class MainWindowController {
 	@FXML
 	public JFXTextField textFieldDetailAreaRootPath;
 	
-	
 	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FolderService auslagern? Bsp: directory validation in einem Folder Service.
-	// TODO: So wäre die Controller Klasse schöne schlank und alle Logik ist in einer extra Klasse.
+	
+	// TODO: Detail Area Clear all inputs when switching sections? OR Keep inputs seperate for each section, save'em
 	
 	// TODO: Services planen, Vererbung muss rein wegen Aufgabenstellung. Lohnt sich eine eigene File Klasse, die die java.io.File erweitert?
 	
 	/**
-	 * Handles the onAction Event, when the button "Create File/Folder" on the main menu is clicked.
+	 * Gets called before the GUI launches. <p>
+	 * Adds the GUI change listeners.
+	 */
+	public void initialize() {
+		addGUIChangeListeners();
+	}
+	
+	/**
+	 * Animates the Detail Area in and sets the global variable activeDetailAreaSection according to the pressed button.
 	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleMainAreaButtonCreateClicked(ActionEvent actionEvent) {
+		activeDetailAreaSection = DetailAreaSection.CREATE;
 		showDetailArea(Animate.IN);
 	}
 	
 	/**
-	 * Handles the onAction Event, when the button "Delete File/Folder" on the main menu is clicked.
+	 * Animates the Detail Area in and sets the global variable activeDetailAreaSection according to the pressed button.
 	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleMainAreaButtonDeleteClicked(ActionEvent actionEvent) {
+		activeDetailAreaSection = DetailAreaSection.DELETE;
 		showDetailArea(Animate.IN);
 	}
 	
 	/**
-	 * Handles the onAction Event, when the button "Create Folder by FML" on the main menu is clicked.
+	 * Animates the Detail Area in and sets the global variable activeDetailAreaSection according to the pressed button.
 	 *
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
 	public void handleMainAreaButtonCreateByFMLClicked(ActionEvent actionEvent) {
+		activeDetailAreaSection = DetailAreaSection.CREATE_BY_FILE;
 		showDetailArea(Animate.IN);
 	}
 	
@@ -172,8 +218,8 @@ public class MainWindowController {
 	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaButtonCreateClicked(ActionEvent actionEvent) {
-		log.info("Detail Area: \"Create\" clicked");
+	public void handleDetailAreaButtonExecuteClicked(ActionEvent actionEvent) {
+	
 	}
 	
 	/**
@@ -197,31 +243,68 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Handles the event in that the user types something into the root path textfield.
-	 * Also validates
-	 *
-	 * @param inputMethodEvent the keyevent provided by the textfield
+	 * Sets the disbale property of the mode labels in the detail area according to the active Mode.
 	 */
-	@FXML
-	public void handleTextFieldDetailAreaRootPathUserInput(KeyEvent inputMethodEvent) {
-		String currentText = textFieldDetailAreaRootPath.getText();
-		
-		boolean pathIsDir = validateThatUserInputIsADirectory(currentText);
-		
-		if (pathIsDir) {
-			setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_SUCCESS, MessageType.SUCCESS);
+	private void changeDetailAreaModeLabelsDisableState() {
+		if (activeMode == Mode.FILE) {
+			labelDetailAreaModeFile.setDisable(false);
+			labelDetailAreaModeFolder.setDisable(true);
 		} else {
-			setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_ERROR, MessageType.ERROR);
+			labelDetailAreaModeFile.setDisable(true);
+			labelDetailAreaModeFolder.setDisable(false);
 		}
 	}
 	
 	/**
-	 * Validates that the path typed in by the user is a directory.
-	 *
-	 * @param 	userInput	the text that is currently stored in the text field
-	 * @return	return if the path points to a directory
+	 * Adds the GUI change listeners. These listenes get activated when the values they are listening to get changed.
+	 * <p/>
+	 * {@link MainWindowController#toggleButtonDetailAreaMode} Listener = Whenever the button gets clicked
+	 * the labels switch their disable state and {@link MainWindowController#activeMode} gets changed.
+	 * <p/>
+	 * {@link MainWindowController#textFieldDetailAreaRootPath} Listener = Whenever the text inside the Text Field
+	 * changes the new value will be check if it is a valid directory.
+	 * Also the message underneath the Text Field will be updated.
 	 */
-	private boolean validateThatUserInputIsADirectory(String userInput) {
+	private void addGUIChangeListeners() {
+		toggleButtonDetailAreaMode.selectedProperty().addListener(
+				(observable, oldValue, newValue) -> {
+					if (newValue) {
+						activeMode = Mode.FOLDER;
+						log.info("Folder");
+					} else {
+						activeMode = Mode.FILE;
+						log.info("File");
+					}
+					
+					changeDetailAreaModeLabelsDisableState();
+				});
+		
+		textFieldDetailAreaRootPath.textProperty().addListener(
+				(observable, oldValue, newValue) -> {
+					
+					//TODO: LATER Call according Service for Folder Validation
+					
+					isRootPathValid = isUserInputDirectory(newValue);
+					
+					if (isRootPathValid) {
+						setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_SUCCESS, MessageType.SUCCESS);
+						selectedRootPath = textFieldDetailAreaRootPath.getText();
+						buttonDetailAreaExecute.setDisable(!isRootPathValid);
+					} else {
+						setLabelDetailAreaRootPathMessageText(ROOT_PATH_MESSAGE_TEXT_ERROR, MessageType.ERROR);
+						selectedRootPath = "";
+						buttonDetailAreaExecute.setDisable(!isRootPathValid);
+					}
+				});
+	}
+	
+	/**
+	 * Validates that the path typed in/selected by the user is a directory.
+	 *
+	 * @param userInput the text that is currently stored in the text field
+	 * @return return if the path points to a directory
+	 */
+	private boolean isUserInputDirectory(String userInput) {
 		return new File(userInput).isDirectory();
 	}
 	
@@ -229,8 +312,8 @@ public class MainWindowController {
 	 * Sets the text of the label in the detail area for the root path message and changes the color according to
 	 * the MessageType.
 	 *
-	 * @param text			the text of the label
-	 * @param messageType	SUCCESS = text color green | ERROR = text color red
+	 * @param text        the text of the label
+	 * @param messageType SUCCESS = text color green | ERROR = text color red
 	 */
 	private void setLabelDetailAreaRootPathMessageText(String text, MessageType messageType) {
 		labelDetailAreaRootPathMessage.setOpacity(1);
@@ -275,11 +358,35 @@ public class MainWindowController {
 	 */
 	private void showDetailArea(Animate animationDirection) {
 		if (animationDirection == Animate.IN) {
+			customizeDetailAreaForSection(activeDetailAreaSection);
+			
 			fadeMainAreaHeader(Fade.OUT);
 			animateDetailArea(Animate.IN);
 		} else {
 			fadeMainAreaHeader(Fade.IN);
 			animateDetailArea(Animate.OUT);
+		}
+	}
+	
+	/**
+	 * Customizes the detail area (e.g. the title) to fit the desired section.
+	 *
+	 * @param section = the section to which the detail area should be customized (e.g. Create, Delete, Create by File)
+	 */
+	private void customizeDetailAreaForSection(DetailAreaSection section) {
+		switch (section) {
+			case CREATE:
+				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_CREATE);
+				buttonDetailAreaExecute.setText(BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE);
+				break;
+			case DELETE:
+				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_DELETE);
+				buttonDetailAreaExecute.setText(BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE);
+				break;
+			case CREATE_BY_FILE:
+				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE);
+				buttonDetailAreaExecute.setText(BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE);
+				break;
 		}
 	}
 	
@@ -294,13 +401,13 @@ public class MainWindowController {
 				= new TranslateTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), paneDetailArea);
 		
 		if (animationDirection == Animate.IN) {
-			translateTransition.setByY(-DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
+			translateTransition.setByY(-DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS);
 			translateTransition.setCycleCount(1);
 			translateTransition.setAutoReverse(false);
 			
 			translateTransition.play();
 		} else {
-			translateTransition.setByY(DETAIL_AREA_ANIMATION_TRAVEL_DISTANCE_Y_AXIS);
+			translateTransition.setByY(DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS);
 			translateTransition.setCycleCount(1);
 			translateTransition.setAutoReverse(false);
 			
