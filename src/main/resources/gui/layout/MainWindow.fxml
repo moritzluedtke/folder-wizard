@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.*?>
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
@@ -43,30 +43,6 @@
 		<!--3 Main buttons-->
 		<center>
 			<HBox alignment="CENTER" spacing="50" translateY="-10">
-				<JFXButton text="Create File/Folder"
-						   onAction="#handleMainAreaButtonCreateClicked"
-						   maxHeight="200" maxWidth="300"
-						   prefHeight="200"
-						   styleClass="button-large-main-menu" textAlignment="CENTER"
-						   focusTraversable="false" wrapText="true">
-					<graphic>
-						<ImageView fitWidth="50" fitHeight="50">
-							<Image url="/gui/icon/white/ic_w_new_file.png"/>
-						</ImageView>
-					</graphic>
-				</JFXButton>
-				<JFXButton text="Delete File/Folder"
-						   onAction="#handleMainAreaButtonDeleteClicked"
-						   maxHeight="200" maxWidth="300"
-						   prefHeight="200"
-						   styleClass="button-large-main-menu" textAlignment="CENTER"
-						   focusTraversable="false" wrapText="true">
-					<graphic>
-						<ImageView fitWidth="50" fitHeight="50">
-							<Image url="/gui/icon/white/ic_w_trashcan.png"/>
-						</ImageView>
-					</graphic>
-				</JFXButton>
 				<JFXButton text="Create Folder by FML"
 						   onAction="#handleMainAreaButtonCreateByFMLClicked"
 						   maxHeight="200" maxWidth="300"
@@ -123,9 +99,9 @@
 		
 		<!--Specify root path, naming, other options-->
 		<center>
-			<VBox BorderPane.alignment="CENTER" spacing="10">
+			<VBox BorderPane.alignment="CENTER" spacing="20">
 				<padding>
-					<Insets top="50" left="20" bottom="20" right="20"/>
+					<Insets top="40" left="20" bottom="20" right="20"/>
 				</padding>
 				
 				<!--Root path selection-->
@@ -151,74 +127,41 @@
 					</JFXButton>
 				</HBox>
 				
-				<!--Name building-->
-				<VBox alignment="CENTER" spacing="10">
-					<JFXMasonryPane fx:id="masonryPaneDetailAreaNameBuilding">
+				<!--File path selection-->
+				<HBox alignment="CENTER" spacing="10">
+					<VBox spacing="5">
+						<Label text="Specify FML path:"
+							   styleClass="detail-area-title"/>
+						<JFXTextField fx:id="textFieldDetailAreaFmlFilePath"
+									  styleClass="text-field-detail-area"
+									  prefWidth="450"/>
+						<Label fx:id="labelDetailAreaFmlFilePathMessage"
+							   styleClass="detail-area-label"
+							   opacity="0"/>
+					</VBox>
 					
-					</JFXMasonryPane>
-					
-					<!--One Chip-->
-					<HBox styleClass="detail-area-chip-background" spacing="5"
-						  maxHeight="25" alignment="CENTER">
-						<padding>
-							<Insets left="11"/>
-						</padding>
-						
-						<Label text="Folder" styleClass="detail-area-label"
-							   textAlignment="CENTER"/>
-						<JFXButton opacity="0.5"
-								   maxWidth="20" maxHeight="20"
-								   ripplerFill="#ababab"
-								   focusTraversable="false">
-							<graphic>
-								<ImageView fitWidth="20" fitHeight="20">
-									<Image url="/gui/icon/black/ic_b_close_circle.png"/>
-								</ImageView>
-							</graphic>
-						</JFXButton>
-					</HBox>
-					
-					<!--Add naming und numbering-->
-					<HBox spacing="10">
-						<!--Name-->
-						<VBox spacing="4">
-							<Label text="Custom Name:"
-								   styleClass="detail-area-label-bold"/>
-							<HBox>
-								<JFXTextField prefWidth="120"
-											  styleClass="text-field-detail-area"/>
-								<JFXButton maxWidth="30" maxHeight="30"
-										   ripplerFill="#ababab"
-										   focusTraversable="false">
-									<graphic>
-										<ImageView fitWidth="30" fitHeight="30">
-											<Image url="/gui/icon/black/ic_b_add_box.png"/>
-										</ImageView>
-									</graphic>
-								</JFXButton>
-							</HBox>
-						</VBox>
-						
-						<!--Number-->
-						<VBox spacing="4">
-							<Label text="Custom Name:"
-								   styleClass="detail-area-label-bold"/>
-							<HBox>
-								<JFXTextField prefWidth="120"
-											  styleClass="text-field-detail-area"/>
-								<JFXButton maxWidth="30" maxHeight="30"
-										   ripplerFill="#ababab"
-										   focusTraversable="false">
-									<graphic>
-										<ImageView fitWidth="30" fitHeight="30">
-											<Image url="/gui/icon/black/ic_b_add_box.png"/>
-										</ImageView>
-									</graphic>
-								</JFXButton>
-							</HBox>
-						</VBox>
-					</HBox>
-				</VBox>
+					<JFXButton onAction="#handleDetailAreaButtonOpenFmlFileClicked"
+							   ripplerFill="#bcbcbc" focusTraversable="false">
+						<graphic>
+							<ImageView fitWidth="40" fitHeight="40">
+								<Image url="/gui/icon/black/ic_b_open_folder.png"/>
+							</ImageView>
+						</graphic>
+					</JFXButton>
+				</HBox>
+				
+				<!--Preview-->
+				<HBox alignment="CENTER" spacing="10">
+					<VBox>
+						<Label text="Preview of"
+							   styleClass="detail-area-title"/>
+						<Label text="the folder structure"
+							   styleClass="detail-area-title"/>
+					</VBox>
+					<JFXTreeView fx:id="treeViewDetailArea"
+								 focusTraversable="false"
+								 prefWidth="350" maxHeight="150"/>
+				</HBox>
 			
 			</VBox>
 		</center>
@@ -227,7 +170,7 @@
 		<bottom>
 			<HBox alignment="CENTER">
 				<padding>
-					<Insets bottom="30"/>
+					<Insets bottom="25"/>
 				</padding>
 				
 				<JFXButton fx:id="buttonDetailAreaExecute"
