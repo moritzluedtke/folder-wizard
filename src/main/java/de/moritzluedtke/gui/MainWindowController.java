@@ -4,7 +4,8 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeView;
-import de.moritzluedtke.service.FolderTreeMaker;
+import de.moritzluedtke.service.FolderUtils;
+import de.moritzluedtke.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
@@ -33,12 +34,12 @@ public class MainWindowController {
 	private static final String JAVA_FX_CSS_TEXT_FILL = "-fx-text-fill: ";
 	private static final String MESSAGE_TEXT_DIRECTORY_VALID = "This is a directory :)";
 	private static final String MESSAGE_TEXT_DIRECTORY_INVALID = "Please specify a valid path to a directory!";
-	public static final String MESSAGE_TEXT_FML_VALID = "This is a valid FML file :)";
+	public static final String MESSAGE_TEXT_FML_VALID = "This is an FML file :)";
 	public static final String MESSAGE_TEXT_FML_INVALID = "Please choose a valid FML file!";
 	
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/Folder";
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/Folder";
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create Folder by File";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/FolderTreeItem";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/FolderTreeItem";
+	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create FolderTreeItem by File";
 	
 	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
 	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
@@ -57,7 +58,7 @@ public class MainWindowController {
 					"\n\n" +
 					"Die Hauptfunktionen sind:\n" +
 					"- Erstellen/Löschen von Dateien und Ordner nach bestimmten, frei definierbaren Namensmustern.\n" +
-					"- Erstellen von Ordnerstrukturen anhand von FML (Folder Modelling Language) Dateien.\n" +
+					"- Erstellen von Ordnerstrukturen anhand von FML (FolderTreeItem Modelling Language) Dateien.\n" +
 					"  Diese Dateien definieren die Ordnerstruktur anhand einer eigenen Syntax.\n" +
 					"\n\n" +
 					"Benutzte Technologien:\n" +
@@ -74,14 +75,17 @@ public class MainWindowController {
 		IN,
 		OUT
 	}
+	
 	private enum Fade {
 		IN,
 		OUT
 	}
+	
 	private enum MessageType {
 		ERROR,
 		SUCCESS
 	}
+	
 	private enum DetailAreaSection {
 		CREATE,
 		DELETE,
@@ -91,7 +95,8 @@ public class MainWindowController {
 	private DetailAreaSection activeDetailAreaSection;
 	private String selectedRootPath = "";
 	private String selectedFmlPath = "";
-	private FolderTreeMaker folderTreeMaker = FolderTreeMaker.getInstance();
+	private FolderUtils folderUtils = FolderUtils.getInstance();
+	private FolderTreeItem rootFolderTreeItem = null;
 	
 	@FXML
 	public StackPane rootStackPane;
@@ -121,7 +126,7 @@ public class MainWindowController {
 	public JFXTreeView treeViewDetailArea;
 	
 	
-	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FolderTreeMaker auslagern? Bsp: directory validation in einem Folder Service.
+	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FolderUtils auslagern? Bsp: directory validation in einem FolderTreeItem Service.
 	
 	// TODO: Detail Area Clear all inputs when switching sections? OR Keep inputs seperate for each section, save'em
 	
@@ -133,14 +138,6 @@ public class MainWindowController {
 	 */
 	public void initialize() {
 		addGUIChangeListeners();
-		
-		//Tree View Test
-		TreeItem<Integer> root = new TreeItem<>(2);
-		TreeItem<Integer> child = new TreeItem<>(222);
-		root.getChildren().add(child);
-		root.setExpanded(true);
-		treeViewDetailArea.setRoot(root);
-		
 	}
 	
 	/**
@@ -214,7 +211,7 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked(ActionEvent actionEvent) {
-	
+		folderUtils.writeFoldersToDisk(rootFolderTreeItem);
 	}
 	
 	/**
@@ -247,11 +244,11 @@ public class MainWindowController {
 	private void addGUIChangeListeners() {
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
-					boolean isRootPathValid = isUserInputADirectory(newValue);
 					
-					if (isRootPathValid) {
+					if (isUserInputADirectory(newValue)) {
 						setLabelDetailAreaMessageText(labelDetailAreaRootPathMessage,
-								MESSAGE_TEXT_DIRECTORY_VALID, MessageType.SUCCESS);
+								MESSAGE_TEXT_DIRECTORY_VALID,
+								MessageType.SUCCESS);
 						selectedRootPath = textFieldDetailAreaRootPath.getText();
 						
 						if (!selectedRootPath.isEmpty() && !selectedFmlPath.isEmpty()) {
@@ -268,15 +265,20 @@ public class MainWindowController {
 		
 		textFieldDetailAreaFmlFilePath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
-					boolean isFmlFilePathValid = isUserInputValidFmlFile(newValue);
 					
-					if (isFmlFilePathValid) {
+					if (isUserInputAFmlFile(newValue)) {
 						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,
-								MESSAGE_TEXT_FML_VALID, MessageType.SUCCESS);
+								MESSAGE_TEXT_FML_VALID,
+								MessageType.SUCCESS);
 						selectedFmlPath = textFieldDetailAreaFmlFilePath.getText();
 						
-						if (!selectedRootPath.isEmpty() && !selectedFmlPath.isEmpty()) {
+						if (!selectedRootPath.isEmpty() && isUserInputADirectory(selectedRootPath)) {
 							buttonDetailAreaExecute.setDisable(false);
+							
+							rootFolderTreeItem = folderUtils.createFolderTreeFromFmlFile(selectedFmlPath,
+									selectedRootPath);
+							
+							makeFolderTreePreviewVisible();
 						}
 					} else {
 						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,
@@ -288,8 +290,32 @@ public class MainWindowController {
 				});
 	}
 	
+	private void makeFolderTreePreviewVisible() {
+		if (rootFolderTreeItem != null) {
+			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName());
+			
+			root = putFolderTreeItemIntoTreeItem(root);
+			
+			root.setExpanded(true);
+			treeViewDetailArea.setRoot(root);
+//			treeViewDetailArea.setShowRoot(false);
+		}
+	}
+	
+	private TreeItem<String> putFolderTreeItemIntoTreeItem(TreeItem<String> root, FolderTreeItem current) {
+		for (FolderTreeItem item : root.getChildren()) {
+			if (item.hasChildren()) {
+				putFolderTreeItemIntoTreeItem(new TreeItem<>(item.getName()));
+			}
+			
+			root.getChildren().add(new TreeItem<>(item.getName()));
+		}
+		
+		return root;
+	}
+	
 	//JAVA DOC
-	private boolean isUserInputValidFmlFile(String userInputPath) {
+	private boolean isUserInputAFmlFile(String userInputPath) {
 		File fmlFile = new File(userInputPath);
 		return fmlFile.isFile() && fmlFile.getPath().endsWith(".fml");
 	}
@@ -301,7 +327,7 @@ public class MainWindowController {
 	 * @return return if the path points to a directory
 	 */
 	private boolean isUserInputADirectory(String userInputPath) {
-		return new File(userInputPath).isDirectory();
+		return new File(userInputPath).isDirectory() && !userInputPath.endsWith("\\");
 	}
 	
 	/**
