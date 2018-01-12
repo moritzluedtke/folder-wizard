@@ -10,19 +10,19 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-public class FolderUtils {
+public class FmlParser {
 	
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final CharSequence FML_KEYWORD = "+";
-	private static FolderUtils instance = new FolderUtils();
+	private static FmlParser instance = new FmlParser();
 	
 	
-	private FolderUtils() {
+	private FmlParser() {
 	
 	}
 	
-	public static FolderUtils getInstance() {
+	public static FmlParser getInstance() {
 		return instance;
 	}
 	
@@ -37,6 +37,14 @@ public class FolderUtils {
 			
 			return null;
 		}
+	}
+	
+	public boolean isUserInputAFolder(String path) {
+		return false;
+	}
+	
+	public boolean isUserInputAFmlFile() {
+		return false;
 	}
 	
 	private FolderTreeItem loopOverFmlLinesToCreateFolders(List<String> filteredFml, String rootPath) {
@@ -76,20 +84,6 @@ public class FolderUtils {
 		String keyword = fmlLine.substring(0, indexOfLastKeyword);
 		
 		return getKeywordForLevel(level).equals(keyword);
-	}
-	
-	public boolean writeFoldersToDisk(FolderTreeItem rootItem) {
-		
-		
-		return false;
-	}
-	
-	public boolean isUserInputAFolder(String path) {
-		return false;
-	}
-	
-	public boolean isUserInputAFmlFile() {
-		return false;
 	}
 	
 	private List<String> filterOutCommentsFromFml(List<String> fml) {

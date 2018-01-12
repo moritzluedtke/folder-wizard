@@ -10,7 +10,7 @@ compileJava.options.encoding = 'UTF-8'
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Implementation-Title': 'FileOrganizer',
+        attributes 'Implementation-Title': 'FileWizard',
                 'Implementation-Version': version,
                 'Main-Class': 'de.moritzluedtke.Starter'
     }

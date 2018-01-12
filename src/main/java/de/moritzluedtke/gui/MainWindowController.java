@@ -4,7 +4,10 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeView;
-import de.moritzluedtke.service.FolderUtils;
+import de.moritzluedtke.service.FmlParser;
+import de.moritzluedtke.service.FmlSyntaxChecker;
+import de.moritzluedtke.service.FolderWriter;
+import de.moritzluedtke.service.Utils;
 import de.moritzluedtke.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
@@ -32,6 +35,8 @@ public class MainWindowController {
 	private static final Logger log = LogManager.getLogger();
 	
 	private static final String JAVA_FX_CSS_TEXT_FILL = "-fx-text-fill: ";
+	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
+	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
 	private static final String MESSAGE_TEXT_DIRECTORY_VALID = "This is a directory :)";
 	private static final String MESSAGE_TEXT_DIRECTORY_INVALID = "Please specify a valid path to a directory!";
 	public static final String MESSAGE_TEXT_FML_VALID = "This is an FML file :)";
@@ -44,12 +49,11 @@ public class MainWindowController {
 	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
 	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
 	public static final String BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE = "Create!";
+	
 	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory:";
 	public static final String FILE_CHOOSER_WINDOW_TITLE = "Choose a FML file:";
 	
-	private static final String DEFAULT_DIRECTORY = "c:/";
-	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
-	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
+	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 550;
 	private static final String ABOUT_DIALOG_CONTENT_TEXT =
@@ -95,8 +99,12 @@ public class MainWindowController {
 	private DetailAreaSection activeDetailAreaSection;
 	private String selectedRootPath = "";
 	private String selectedFmlPath = "";
-	private FolderUtils folderUtils = FolderUtils.getInstance();
 	private FolderTreeItem rootFolderTreeItem = null;
+	
+	private FmlSyntaxChecker fmlSyntaxChecker = FmlSyntaxChecker.getInstance();
+	private FmlParser fmlParser = FmlParser.getInstance();
+	private FolderWriter folderWriter = FolderWriter.getInstance();
+	private Utils utils = Utils.getInstance();
 	
 	@FXML
 	public StackPane rootStackPane;
@@ -126,9 +134,7 @@ public class MainWindowController {
 	public JFXTreeView treeViewDetailArea;
 	
 	
-	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FolderUtils auslagern? Bsp: directory validation in einem FolderTreeItem Service.
-	
-	// TODO: Detail Area Clear all inputs when switching sections? OR Keep inputs seperate for each section, save'em
+	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FmlParser auslagern? Bsp: directory validation in einem FolderTreeItem Service.
 	
 	// TODO: Services planen, Vererbung muss rein wegen Aufgabenstellung. Lohnt sich eine eigene File Klasse, die die java.io.File erweitert?
 	
@@ -176,7 +182,7 @@ public class MainWindowController {
 		File selectedDirectory = dirChooser.showDialog(mainWindow);
 		
 		if (selectedDirectory != null) {
-			if (isUserInputADirectory(selectedDirectory.getAbsolutePath())) {
+			if (utils.isUserInputADirectory(selectedDirectory.getAbsolutePath())) {
 				try {
 					textFieldDetailAreaRootPath.setText(selectedDirectory.getCanonicalPath());
 				} catch (IOException e) {
@@ -211,7 +217,7 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked(ActionEvent actionEvent) {
-		folderUtils.writeFoldersToDisk(rootFolderTreeItem);
+		folderWriter.writeFoldersToDisk(rootFolderTreeItem);
 	}
 	
 	/**
@@ -244,14 +250,14 @@ public class MainWindowController {
 	private void addGUIChangeListeners() {
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
-					
-					if (isUserInputADirectory(newValue)) {
+					if (utils.isUserInputADirectory(newValue)) {
 						setLabelDetailAreaMessageText(labelDetailAreaRootPathMessage,
 								MESSAGE_TEXT_DIRECTORY_VALID,
 								MessageType.SUCCESS);
-						selectedRootPath = textFieldDetailAreaRootPath.getText();
 						
-						if (!selectedRootPath.isEmpty() && !selectedFmlPath.isEmpty()) {
+						selectedRootPath = newValue;
+						
+						if (!selectedFmlPath.isEmpty() && utils.isUserInputAFmlFile(selectedFmlPath)) {
 							buttonDetailAreaExecute.setDisable(false);
 						}
 					} else {
@@ -265,17 +271,17 @@ public class MainWindowController {
 		
 		textFieldDetailAreaFmlFilePath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
-					
-					if (isUserInputAFmlFile(newValue)) {
+					if (utils.isUserInputAFmlFile(newValue)) {
 						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,
 								MESSAGE_TEXT_FML_VALID,
 								MessageType.SUCCESS);
-						selectedFmlPath = textFieldDetailAreaFmlFilePath.getText();
 						
-						if (!selectedRootPath.isEmpty() && isUserInputADirectory(selectedRootPath)) {
+						selectedFmlPath = newValue;
+						
+						if (!selectedRootPath.isEmpty() && utils.isUserInputADirectory(selectedRootPath)) {
 							buttonDetailAreaExecute.setDisable(false);
 							
-							rootFolderTreeItem = folderUtils.createFolderTreeFromFmlFile(selectedFmlPath,
+							rootFolderTreeItem = fmlParser.createFolderTreeFromFmlFile(selectedFmlPath,
 									selectedRootPath);
 							
 							makeFolderTreePreviewVisible();
@@ -294,40 +300,12 @@ public class MainWindowController {
 		if (rootFolderTreeItem != null) {
 			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName());
 			
-			root = putFolderTreeItemIntoTreeItem(root);
+			root = utils.putFolderTreeIntoTreeItems(root, rootFolderTreeItem);
 			
 			root.setExpanded(true);
 			treeViewDetailArea.setRoot(root);
-//			treeViewDetailArea.setShowRoot(false);
+			treeViewDetailArea.setShowRoot(false);
 		}
-	}
-	
-	private TreeItem<String> putFolderTreeItemIntoTreeItem(TreeItem<String> root, FolderTreeItem current) {
-		for (FolderTreeItem item : root.getChildren()) {
-			if (item.hasChildren()) {
-				putFolderTreeItemIntoTreeItem(new TreeItem<>(item.getName()));
-			}
-			
-			root.getChildren().add(new TreeItem<>(item.getName()));
-		}
-		
-		return root;
-	}
-	
-	//JAVA DOC
-	private boolean isUserInputAFmlFile(String userInputPath) {
-		File fmlFile = new File(userInputPath);
-		return fmlFile.isFile() && fmlFile.getPath().endsWith(".fml");
-	}
-	
-	/**
-	 * Validates that the path typed in/selected by the user is a directory.
-	 *
-	 * @param userInputPath the text that is currently stored in the text field
-	 * @return return if the path points to a directory
-	 */
-	private boolean isUserInputADirectory(String userInputPath) {
-		return new File(userInputPath).isDirectory() && !userInputPath.endsWith("\\");
 	}
 	
 	/**
