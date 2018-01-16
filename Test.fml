@@ -2,8 +2,18 @@ Kommentar
 
 +Folder1
 ++SubFolder1
- Kommentar
++++Kommentar
++++Another Folder
+++++Really deep
+++++Still deep
+++++Still deep
+++++Still deep
+++++Still deep
++++++Even Deeper
++++Not that deep
 ++Subfolder2
-
+++Subfolder3
+++Subfolder4
+++Subfolder5
 
 Kommentar

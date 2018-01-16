@@ -1,5 +1,6 @@
 package de.moritzluedtke.service;
 
+import de.moritzluedtke.service.exception.FMLSyntaxException;
 import de.moritzluedtke.service.model.FolderTreeItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,15 +8,15 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
 import java.util.List;
 
 public class FmlParser {
 	
 	private static final Logger log = LogManager.getLogger();
+	private static FmlParser instance = new FmlParser();
 	
 	private static final CharSequence FML_KEYWORD = "+";
-	private static FmlParser instance = new FmlParser();
+	private FmlSyntaxChecker syntaxChecker = FmlSyntaxChecker.getInstance();
 	
 	
 	private FmlParser() {
@@ -26,28 +27,22 @@ public class FmlParser {
 		return instance;
 	}
 	
-	public FolderTreeItem createFolderTreeFromFmlFile(String fmlPath, String rootPath) {
-		try {
-			List<String> fml = Files.readAllLines(Paths.get(fmlPath));
-			fml = filterOutCommentsFromFml(fml);
-			
-			return loopOverFmlLinesToCreateFolders(fml, rootPath);
-		} catch (IOException e) {
-			log.error("Error with loading the FML file\n" + e.getMessage());
-			
-			return null;
-		}
+	public FolderTreeItem createFolderTreeFromFmlFile(String fmlPath, String rootPath)
+			throws FMLSyntaxException, IOException {
+		
+		List<String> fml = getFmlFromFile(fmlPath);
+		
+		return loopOverFmlLinesToCreateFolderItems(fml, rootPath);
 	}
 	
-	public boolean isUserInputAFolder(String path) {
-		return false;
+	private List<String> getFmlFromFile(String path) throws IOException, FMLSyntaxException {
+		List<String> fml = Files.readAllLines(Paths.get(path));
+		// TODO: Throw Syntax Exception if a character other than Alhpanumeric, blank space and underscore is found, only define the happy path, everything else is wrong
+		fml.removeIf(line -> !line.startsWith(FML_KEYWORD.toString()));
+		return fml;
 	}
 	
-	public boolean isUserInputAFmlFile() {
-		return false;
-	}
-	
-	private FolderTreeItem loopOverFmlLinesToCreateFolders(List<String> filteredFml, String rootPath) {
+	private FolderTreeItem loopOverFmlLinesToCreateFolderItems(List<String> filteredFml, String rootPath) {
 		FolderTreeItem root = new FolderTreeItem(getFolderNameFromPath(rootPath), rootPath, null);
 		FolderTreeItem currentRoot = root;
 		
@@ -65,13 +60,14 @@ public class FmlParser {
 			
 			if (lineIndex < filteredFml.size() - 1) {
 				String nextLine = filteredFml.get(lineIndex + 1);
+				int nextTreeLevel = getLevelFromKeyword(nextLine);
 				
-				if (isFmlLineStartingWithKeywordForLevel(nextLine, currentTreeLevel + 1)) {
+				if (nextTreeLevel > currentTreeLevel) {
 					currentRoot = newFolder;
-					currentTreeLevel++;
-				} else if (isFmlLineStartingWithKeywordForLevel(nextLine, currentTreeLevel - 1)) {
-					currentRoot = currentRoot.getParent();
-					currentTreeLevel--;
+					currentTreeLevel = nextTreeLevel;
+				} else if (nextTreeLevel < currentTreeLevel) {
+					currentRoot = getParentFromLevelDifference(newFolder, currentTreeLevel - nextTreeLevel);
+					currentTreeLevel = nextTreeLevel;
 				}
 			}
 		}
@@ -79,21 +75,22 @@ public class FmlParser {
 		return root;
 	}
 	
-	private boolean isFmlLineStartingWithKeywordForLevel(String fmlLine, int level) {
+	private FolderTreeItem getParentFromLevelDifference(FolderTreeItem folder, int numberOfTreeLevelsToMoveUpTheTree) {
+		int i = 0;
+		while (i <= numberOfTreeLevelsToMoveUpTheTree) {
+			folder = folder.getParent();
+			
+			i++;
+		}
+		
+		return folder;
+	}
+	
+	private int getLevelFromKeyword(String fmlLine) {
 		int indexOfLastKeyword = fmlLine.lastIndexOf(FML_KEYWORD.toString()) + 1;
 		String keyword = fmlLine.substring(0, indexOfLastKeyword);
 		
-		return getKeywordForLevel(level).equals(keyword);
-	}
-	
-	private List<String> filterOutCommentsFromFml(List<String> fml) {
-		fml.removeIf(line -> !line.startsWith(FML_KEYWORD.toString()));
-		
-		return fml;
-	}
-	
-	private String getKeywordForLevel(int level) {
-		return String.join("", Collections.nCopies(level, FML_KEYWORD));
+		return keyword.length();
 	}
 	
 	private String getFolderNameFromFmlLine(String line) {

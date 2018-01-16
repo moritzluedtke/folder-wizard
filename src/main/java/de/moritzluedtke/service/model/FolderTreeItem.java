@@ -38,7 +38,7 @@ public class FolderTreeItem {
 	}
 	
 	public boolean hasChildren() {
-		return children != null && children.size() > 0;
+		return children != null;
 	}
 	
 	private void createChildrenListIfChildrenNull() {

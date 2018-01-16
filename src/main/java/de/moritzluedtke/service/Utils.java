@@ -17,6 +17,20 @@ public class Utils {
 		return instance;
 	}
 	
+	public TreeItem<String> putFolderTreeIntoTreeItems(TreeItem<String> currentTreeRoot,
+													   FolderTreeItem currentFolderRoot) {
+			for (FolderTreeItem folderItem : currentFolderRoot.getChildren()) {
+				TreeItem<String> newTreeItem = new TreeItem<>(folderItem.getName());
+				currentTreeRoot.getChildren().add(newTreeItem);
+				
+				if (folderItem.hasChildren()) {
+					putFolderTreeIntoTreeItems(newTreeItem, folderItem);
+				}
+			}
+		
+		return currentTreeRoot;
+	}
+	
 	public boolean isUserInputAFmlFile(String userInputPath) {
 		File fmlFile = new File(userInputPath);
 		return fmlFile.isFile() && fmlFile.getPath().endsWith(".fml");
@@ -30,21 +44,5 @@ public class Utils {
 	 */
 	public boolean isUserInputADirectory(String userInputPath) {
 		return new File(userInputPath).isDirectory() && !userInputPath.endsWith("\\");
-	}
-	
-	public TreeItem<String> putFolderTreeIntoTreeItems(TreeItem<String> currentTreeRoot,
-														FolderTreeItem currentFolderRoot) {
-		if (currentFolderRoot.hasChildren()) {
-			for (FolderTreeItem folderItem : currentFolderRoot.getChildren()) {
-				TreeItem<String> newTreeItem = new TreeItem<>(folderItem.getName());
-				currentTreeRoot.getChildren().add(newTreeItem);
-				
-				if (folderItem.hasChildren()) {
-					putFolderTreeIntoTreeItems(newTreeItem, folderItem);
-				}
-			}
-		}
-		
-		return currentTreeRoot;
 	}
 }

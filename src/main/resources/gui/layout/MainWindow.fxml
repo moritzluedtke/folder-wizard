@@ -9,16 +9,18 @@
 		   xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.moritzluedtke.gui.MainWindowController"
 		   fx:id="rootStackPane">
 	
-	<!--About dialog-->
-	<VBox fx:id="aboutDialogContent"
+	<!--Dialog-->
+	<VBox fx:id="dialogVBox"
 		  alignment="CENTER"
 		  maxWidth="750" spacing="20" opacity="0">
 		<padding>
 			<Insets top="20" left="20" bottom="20" right="20"/>
 		</padding>
-		<Label text="Über File Wizard" textAlignment="CENTER"
-			   styleClass="about-dialog-title"/>
-		<Label fx:id="labelMainAreaAboutDialogContent"
+		<Label fx:id="labelDialogTitle"
+				text="Über File Wizard" textAlignment="CENTER"
+			   styleClass="dialog-title"/>
+		<Label fx:id="labelDialogContent"
+			   textAlignment="CENTER"
 			   styleClass="about-dialog-content-text" wrapText="true"/>
 	</VBox>
 	
@@ -71,7 +73,7 @@
 	<!--Detail area-->
 	<BorderPane fx:id="paneDetailArea"
 				maxWidth="800" maxHeight="560"
-				styleClass="detail-area-pane" translateY="570">
+				styleClass="detail-area-pane" translateY="580">
 		
 		<!--Header-->
 		<top>

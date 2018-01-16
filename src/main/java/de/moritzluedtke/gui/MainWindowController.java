@@ -8,6 +8,7 @@ import de.moritzluedtke.service.FmlParser;
 import de.moritzluedtke.service.FmlSyntaxChecker;
 import de.moritzluedtke.service.FolderWriter;
 import de.moritzluedtke.service.Utils;
+import de.moritzluedtke.service.exception.FMLSyntaxException;
 import de.moritzluedtke.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
@@ -55,15 +56,13 @@ public class MainWindowController {
 	
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
-	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 550;
+	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
 	private static final String ABOUT_DIALOG_CONTENT_TEXT =
-			"File Wizard wurde im Rahmen von der AE-Hausaufgabe in Block 4 geschrieben." +
+			"File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
 					"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
 					"\n\n" +
-					"Die Hauptfunktionen sind:\n" +
-					"- Erstellen/Löschen von Dateien und Ordner nach bestimmten, frei definierbaren Namensmustern.\n" +
-					"- Erstellen von Ordnerstrukturen anhand von FML (FolderTreeItem Modelling Language) Dateien.\n" +
-					"  Diese Dateien definieren die Ordnerstruktur anhand einer eigenen Syntax.\n" +
+					"Die Hauptfunktionen ist das erstellen von Ordnerstrukturen " +
+					"anhand von FML (FolderTreeItem Modelling Language) Dateien.\n" +
 					"\n\n" +
 					"Benutzte Technologien:\n" +
 					"- Java 8 + JavaFX 2\n" +
@@ -74,6 +73,7 @@ public class MainWindowController {
 					"- Bitbucket (Kostenloses Git Repository)\n" +
 					"\n" +
 					"© 2018 Moritz Lüdtke";
+	public static final String ABOUT_DIALOG_TITLE = "About File Wizard";
 	
 	private enum Animate {
 		IN,
@@ -115,7 +115,9 @@ public class MainWindowController {
 	@FXML
 	private Label labelMainAreaHeaderSubtitle;
 	@FXML
-	public Label labelMainAreaAboutDialogContent;
+	public Label labelDialogTitle;
+	@FXML
+	public Label labelDialogContent;
 	@FXML
 	public Label labelDetailAreaTitle;
 	@FXML
@@ -125,7 +127,7 @@ public class MainWindowController {
 	@FXML
 	public JFXButton buttonDetailAreaExecute;
 	@FXML
-	public VBox aboutDialogContent;
+	public VBox dialogVBox;
 	@FXML
 	public JFXTextField textFieldDetailAreaFmlFilePath;
 	@FXML
@@ -134,8 +136,7 @@ public class MainWindowController {
 	public JFXTreeView treeViewDetailArea;
 	
 	
-	// TODO: Alle Sachen, die nicht mit der UI zu tun haben in extra Services (FileService, FmlParser auslagern? Bsp: directory validation in einem FolderTreeItem Service.
-	
+	// TODO: Refactor long methods, e.g. addGuiListners()
 	// TODO: Services planen, Vererbung muss rein wegen Aufgabenstellung. Lohnt sich eine eigene File Klasse, die die java.io.File erweitert?
 	
 	/**
@@ -227,7 +228,7 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleMainMenuLabelCreatedByClicked(MouseEvent mouseEvent) {
-		showAboutDialog();
+		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
 	/**
@@ -237,7 +238,7 @@ public class MainWindowController {
 	 */
 	@FXML
 	public void handleHeaderMainMenuClick(MouseEvent mouseEvent) {
-		showAboutDialog();
+		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
 	/**
@@ -281,8 +282,21 @@ public class MainWindowController {
 						if (!selectedRootPath.isEmpty() && utils.isUserInputADirectory(selectedRootPath)) {
 							buttonDetailAreaExecute.setDisable(false);
 							
-							rootFolderTreeItem = fmlParser.createFolderTreeFromFmlFile(selectedFmlPath,
-									selectedRootPath);
+							try {
+								rootFolderTreeItem = fmlParser.createFolderTreeFromFmlFile(selectedFmlPath,
+										selectedRootPath);
+								
+							} catch (FMLSyntaxException e) {
+								log.error(e.getMessage());
+								showDialog("Incorrect FML Syntax!", "ERROR");
+								
+								textFieldDetailAreaFmlFilePath.setText("");
+							} catch (IOException e) {
+								log.error(e.getMessage());
+								showDialog("There was a problem with loading the FML file!", "ERROR");
+								
+								textFieldDetailAreaFmlFilePath.setText("");
+							}
 							
 							makeFolderTreePreviewVisible();
 						}
@@ -298,13 +312,23 @@ public class MainWindowController {
 	
 	private void makeFolderTreePreviewVisible() {
 		if (rootFolderTreeItem != null) {
-			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName());
+			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName() + " (root)");
 			
 			root = utils.putFolderTreeIntoTreeItems(root, rootFolderTreeItem);
 			
-			root.setExpanded(true);
+			expandTree(root);
 			treeViewDetailArea.setRoot(root);
-			treeViewDetailArea.setShowRoot(false);
+//			treeViewDetailArea.setShowRoot(false);
+		}
+	}
+	
+	private void expandTree(TreeItem<?> item) {
+		if (item != null && !item.isLeaf()) {
+			item.setExpanded(true);
+			
+			for (TreeItem<?> child : item.getChildren()) {
+				expandTree(child);
+			}
 		}
 	}
 	
@@ -337,13 +361,15 @@ public class MainWindowController {
 	 * Sets the opacity of the dialog content to 1 (full opacity). The Content needs to remain hidden before the dialog
 	 * appears. Otherwise it would be visible in the layout.
 	 */
-	private void showAboutDialog() {
+	private void showDialog(String message, String title) {
 		JFXDialog dialog = new JFXDialog();
 		
-		aboutDialogContent.setOpacity(1);
-		labelMainAreaAboutDialogContent.setText(ABOUT_DIALOG_CONTENT_TEXT);
+		dialogVBox.setOpacity(1);
 		
-		dialog.setContent(aboutDialogContent);
+		labelDialogContent.setText(message);
+		labelDialogTitle.setText(title);
+		
+		dialog.setContent(dialogVBox);
 		dialog.setDialogContainer(rootStackPane);
 		dialog.show();
 	}
