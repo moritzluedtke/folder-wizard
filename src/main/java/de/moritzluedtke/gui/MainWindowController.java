@@ -57,6 +57,8 @@ public class MainWindowController {
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
+	
+	public static final String ABOUT_DIALOG_TITLE = "About File Wizard";
 	private static final String ABOUT_DIALOG_CONTENT_TEXT =
 			"File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
 					"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
@@ -66,14 +68,21 @@ public class MainWindowController {
 					"\n\n" +
 					"Benutzte Technologien:\n" +
 					"- Java 8 + JavaFX 2\n" +
-					"- JFoenix (Material Design Library für JavaFX)\n" +
-					"- Logfj2 (Logging Framework)\n" +
-					"- Gradle (Build-Management-Automatisierungs-Tool)\n" +
+					"- JFoenix\n" +
+					"- Logfj2\n" +
+					"- Gradle\n" +
 					"- IntelliJ 2017 Community & Professional\n" +
-					"- Bitbucket (Kostenloses Git Repository)\n" +
+					"- Bitbucket\n" +
 					"\n" +
 					"© 2018 Moritz Lüdtke";
-	public static final String ABOUT_DIALOG_TITLE = "About File Wizard";
+	public static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
+			= "Incorrect FML Syntax!\n\n" +
+			"Please check your file if it does not contain:\n" +
+			"- Any characters other than A-Z, a-z, 0-9, blank space, _, -, +\n" +
+			"- A forward jump (e.g. jumping from \"++\" level to \"++++\")\n\n" +
+			"Check if it contains:\n" +
+			"- Any keyword (+). If there is no keyword at the start of a line,\n" +
+			"this program can't create a folder structure\n";
 	
 	private enum Animate {
 		IN,
@@ -280,15 +289,16 @@ public class MainWindowController {
 						selectedFmlPath = newValue;
 						
 						if (!selectedRootPath.isEmpty() && utils.isUserInputADirectory(selectedRootPath)) {
-							buttonDetailAreaExecute.setDisable(false);
 							
 							try {
 								rootFolderTreeItem = fmlParser.createFolderTreeFromFmlFile(selectedFmlPath,
 										selectedRootPath);
 								
+								buttonDetailAreaExecute.setDisable(false);
+								makeFolderTreePreviewVisible();
 							} catch (FMLSyntaxException e) {
 								log.error(e.getMessage());
-								showDialog("Incorrect FML Syntax!", "ERROR");
+								showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, "ERROR");
 								
 								textFieldDetailAreaFmlFilePath.setText("");
 							} catch (IOException e) {
@@ -297,8 +307,6 @@ public class MainWindowController {
 								
 								textFieldDetailAreaFmlFilePath.setText("");
 							}
-							
-							makeFolderTreePreviewVisible();
 						}
 					} else {
 						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,

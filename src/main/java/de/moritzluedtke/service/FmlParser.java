@@ -30,16 +30,20 @@ public class FmlParser {
 	public FolderTreeItem createFolderTreeFromFmlFile(String fmlPath, String rootPath)
 			throws FMLSyntaxException, IOException {
 		
-		List<String> fml = getFmlFromFile(fmlPath);
+		List<String> fml = extractFmlFromFile(fmlPath);
 		
 		return loopOverFmlLinesToCreateFolderItems(fml, rootPath);
 	}
 	
-	private List<String> getFmlFromFile(String path) throws IOException, FMLSyntaxException {
+	private List<String> extractFmlFromFile(String path) throws IOException, FMLSyntaxException {
 		List<String> fml = Files.readAllLines(Paths.get(path));
-		// TODO: Throw Syntax Exception if a character other than Alhpanumeric, blank space and underscore is found, only define the happy path, everything else is wrong
 		fml.removeIf(line -> !line.startsWith(FML_KEYWORD.toString()));
-		return fml;
+		
+		if (syntaxChecker.isFmlSyntaxValid(fml)) {
+			return fml;
+		} else {
+			throw new FMLSyntaxException();
+		}
 	}
 	
 	private FolderTreeItem loopOverFmlLinesToCreateFolderItems(List<String> filteredFml, String rootPath) {
