@@ -291,7 +291,7 @@ public class MainWindowController {
 						if (!selectedRootPath.isEmpty() && utils.isUserInputADirectory(selectedRootPath)) {
 							
 							try {
-								rootFolderTreeItem = fmlParser.createFolderTreeFromFmlFile(selectedFmlPath,
+								rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
 										selectedRootPath);
 								
 								buttonDetailAreaExecute.setDisable(false);

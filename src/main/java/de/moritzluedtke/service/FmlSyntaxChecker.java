@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class FmlSyntaxChecker {
@@ -35,9 +36,15 @@ public class FmlSyntaxChecker {
 		String fmlAsString = sb.toString();
 		
 		return checkForLegalChars(fmlAsString)
-//				&& checkForForwardJump(fmlAsString)
+				&& checkForNoDuplicateNames(fmlAsList)
 				&& checkIfAnyKeywordIsPresent(fmlAsList)
-				&& checkForKeywordAsName(fmlAsString);
+				&& checkForForwardJump(fmlAsList);
+	}
+	
+	private boolean checkForForwardJump(List<String> fmlAsList) {
+		
+		
+		return true;
 	}
 	
 	private boolean checkForLegalChars(String fml) {
@@ -45,6 +52,7 @@ public class FmlSyntaxChecker {
 			if (!validSpecialCharacters.contains(currentCharFromFml)
 					&& !Character.isLetter(currentCharFromFml)
 					&& !Character.isDigit(currentCharFromFml)) {
+				log.error("FML contains illegal character: " + currentCharFromFml);
 				return false;
 			}
 		}
@@ -54,20 +62,41 @@ public class FmlSyntaxChecker {
 	
 	private boolean checkIfAnyKeywordIsPresent(List<String> fmlAsList) {
 		for (String line : fmlAsList) {
-		    if (line.startsWith("+")) {
+			if (line.startsWith("+")) {
 				return true;
-		    }
+			}
 		}
 		
+		log.error("FML contains no keyword at the start of a line");
 		return false;
 	}
 	
-	private boolean checkForKeywordAsName(String fml) {
+	private boolean checkForNoDuplicateNames(List<String> fmlAsList) {
+		HashMap<String, Integer> numberOfDuplicateFolderNames = aggregateDuplicateList(fmlAsList);
+		
+		for (String currentFolderName : numberOfDuplicateFolderNames.keySet()) {
+			if (numberOfDuplicateFolderNames.get(currentFolderName) > 1) {
+				log.error("Found a duplicate Foldername: " + currentFolderName);
+				return false;
+			}
+		}
+		
 		return true;
 	}
-
-//	private boolean checkForForwardJump(String fml) {
-//		return true;
-//	}
-
+	
+	private HashMap<String, Integer> aggregateDuplicateList(List<String> fml) {
+		HashMap<String, Integer> map = new HashMap<>();
+		
+		for (String line : fml) {
+			if (map.containsKey(line)) {
+				int oldValue = map.get(line);
+				map.replace(line, oldValue + 1);
+			} else {
+				map.put(line, 1);
+			}
+		}
+		
+		return map;
+	}
+	
 }

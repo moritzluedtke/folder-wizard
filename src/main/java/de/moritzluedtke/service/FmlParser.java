@@ -2,8 +2,6 @@ package de.moritzluedtke.service;
 
 import de.moritzluedtke.service.exception.FMLSyntaxException;
 import de.moritzluedtke.service.model.FolderTreeItem;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -12,7 +10,6 @@ import java.util.List;
 
 public class FmlParser {
 	
-	private static final Logger log = LogManager.getLogger();
 	private static FmlParser instance = new FmlParser();
 	
 	private static final CharSequence FML_KEYWORD = "+";
@@ -27,7 +24,7 @@ public class FmlParser {
 		return instance;
 	}
 	
-	public FolderTreeItem createFolderTreeFromFmlFile(String fmlPath, String rootPath)
+	public FolderTreeItem parseFml(String fmlPath, String rootPath)
 			throws FMLSyntaxException, IOException {
 		
 		List<String> fml = extractFmlFromFile(fmlPath);
