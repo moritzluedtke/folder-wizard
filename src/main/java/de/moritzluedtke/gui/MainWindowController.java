@@ -40,25 +40,25 @@ public class MainWindowController {
 	private static final String MESSAGE_TYPE_ERROR_COLOR = "#AA0000";
 	private static final String MESSAGE_TEXT_DIRECTORY_VALID = "This is a directory :)";
 	private static final String MESSAGE_TEXT_DIRECTORY_INVALID = "Please specify a valid path to a directory!";
-	public static final String MESSAGE_TEXT_FML_VALID = "This is an FML file :)";
-	public static final String MESSAGE_TEXT_FML_INVALID = "Please choose a valid FML file!";
+	private static final String MESSAGE_TEXT_FML_VALID = "This is an FML file :)";
+	private static final String MESSAGE_TEXT_FML_INVALID = "Please choose a valid FML file!";
 	
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/FolderTreeItem";
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/FolderTreeItem";
-	public static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create FolderTreeItem by File";
+	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/FolderTreeItem";
+	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/FolderTreeItem";
+	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create FolderTreeItem by File";
 	
-	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
-	public static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
-	public static final String BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE = "Create!";
+	private static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
+	private static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
+	private static final String BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE = "Create!";
 	
 	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory:";
-	public static final String FILE_CHOOSER_WINDOW_TITLE = "Choose a FML file:";
+	private static final String FILE_CHOOSER_WINDOW_TITLE = "Choose a FML file:";
 	
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
 	
-	public static final String ABOUT_DIALOG_TITLE = "About File Wizard";
+	private static final String ABOUT_DIALOG_TITLE = "About File Wizard";
 	private static final String ABOUT_DIALOG_CONTENT_TEXT =
 			"File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
 					"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
@@ -75,11 +75,12 @@ public class MainWindowController {
 					"- Bitbucket\n" +
 					"\n" +
 					"© 2018 Moritz Lüdtke";
-	public static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
+	private static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
 			= "Incorrect FML Syntax!\n\n" +
 			"Please check your file if it does not contain:\n" +
 			"- Any characters other than A-Z, a-z, 0-9, blank space, _, -, +\n" +
-			"- A forward jump (e.g. jumping from \"++\" level to \"++++\")\n\n" +
+			"- A forward jump (e.g. jumping from \"++\" level to \"++++\")\n" +
+			"- Duplicate folder names in the same scope/level\n\n" +
 			"Check if it contains:\n" +
 			"- Any keyword (+). If there is no keyword at the start of a line,\n" +
 			"this program can't create a folder structure\n";
@@ -116,33 +117,33 @@ public class MainWindowController {
 	private Utils utils = Utils.getInstance();
 	
 	@FXML
-	public StackPane rootStackPane;
+	private StackPane rootStackPane;
 	@FXML
-	public Pane paneDetailArea;
+	private Pane paneDetailArea;
 	@FXML
 	private Label labelMainAreaHeaderTitle;
 	@FXML
 	private Label labelMainAreaHeaderSubtitle;
 	@FXML
-	public Label labelDialogTitle;
+	private Label labelDialogTitle;
 	@FXML
-	public Label labelDialogContent;
+	private Label labelDialogContent;
 	@FXML
-	public Label labelDetailAreaTitle;
+	private Label labelDetailAreaTitle;
 	@FXML
-	public Label labelDetailAreaRootPathMessage;
+	private Label labelDetailAreaRootPathMessage;
 	@FXML
-	public Label labelDetailAreaFmlFilePathMessage;
+	private Label labelDetailAreaFmlFilePathMessage;
 	@FXML
-	public JFXButton buttonDetailAreaExecute;
+	private JFXButton buttonDetailAreaExecute;
 	@FXML
-	public VBox dialogVBox;
+	private VBox dialogVBox;
 	@FXML
-	public JFXTextField textFieldDetailAreaFmlFilePath;
+	private JFXTextField textFieldDetailAreaFmlFilePath;
 	@FXML
-	public JFXTextField textFieldDetailAreaRootPath;
+	private JFXTextField textFieldDetailAreaRootPath;
 	@FXML
-	public JFXTreeView treeViewDetailArea;
+	private JFXTreeView treeViewDetailArea;
 	
 	
 	// TODO: Refactor long methods, e.g. addGuiListners()
