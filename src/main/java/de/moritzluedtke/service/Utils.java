@@ -17,14 +17,14 @@ public class Utils {
 		return instance;
 	}
 	
-	public TreeItem<String> putFolderTreeIntoTreeItems(TreeItem<String> currentTreeRoot,
-													   FolderTreeItem currentFolderRoot) {
+	public TreeItem<String> convertFolderTreeIntoTreeItem(TreeItem<String> currentTreeRoot,
+														  FolderTreeItem currentFolderRoot) {
 			for (FolderTreeItem folderItem : currentFolderRoot.getChildren()) {
 				TreeItem<String> newTreeItem = new TreeItem<>(folderItem.getName());
 				currentTreeRoot.getChildren().add(newTreeItem);
 				
 				if (folderItem.hasChildren()) {
-					putFolderTreeIntoTreeItems(newTreeItem, folderItem);
+					convertFolderTreeIntoTreeItem(newTreeItem, folderItem);
 				}
 			}
 		

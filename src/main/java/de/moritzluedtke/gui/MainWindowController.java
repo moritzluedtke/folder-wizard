@@ -5,18 +5,16 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeView;
 import de.moritzluedtke.service.FmlParser;
-import de.moritzluedtke.service.FmlSyntaxChecker;
 import de.moritzluedtke.service.FolderWriter;
 import de.moritzluedtke.service.Utils;
 import de.moritzluedtke.service.exception.FMLSyntaxException;
 import de.moritzluedtke.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -43,12 +41,8 @@ public class MainWindowController {
 	private static final String MESSAGE_TEXT_FML_VALID = "This is an FML file :)";
 	private static final String MESSAGE_TEXT_FML_INVALID = "Please choose a valid FML file!";
 	
-	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE = "Create File/FolderTreeItem";
-	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_DELETE = "Delete File/FolderTreeItem";
-	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create FolderTreeItem by File";
+	private static final String LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE = "Create Folder by File";
 	
-	private static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE = "Create!";
-	private static final String BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE = "Delete!";
 	private static final String BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE = "Create!";
 	
 	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory:";
@@ -56,6 +50,7 @@ public class MainWindowController {
 	
 	private static final String DEFAULT_DIRECTORY = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
+	private static final double VERY_LARGE_ANIMATION_DURATION_IN_MS = 2000;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
 	
 	private static final String ABOUT_DIALOG_TITLE = "About File Wizard";
@@ -77,14 +72,19 @@ public class MainWindowController {
 					"© 2018 Moritz Lüdtke";
 	private static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
 			= "Incorrect FML Syntax!\n\n" +
-			"Please check your file if it does not contain:\n" +
-			"- Any characters other than A-Z, a-z, 0-9, blank space, _, -, +\n" +
+			"Please check your file, it must not contain:\n" +
+			"- Any characters other than A-Z, a-z, 0-9, blank space, _ , - as a folder name\n" +
 			"- A forward jump (e.g. jumping from \"++\" level to \"++++\")\n" +
+			"- No \"+\" in a folder name\n" +
 			"- Duplicate folder names in the same scope/level\n\n" +
 			"Check if it contains:\n" +
 			"- Any keyword (+). If there is no keyword at the start of a line,\n" +
 			"this program can't create a folder structure\n";
-	
+	public static final String ERROR_DIALOG_TITLE = "ERROR";
+	public static final String ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE
+			= "Can not create folder structure.\n" +
+			"Please check that there is no folder already in the specified directory that is also in the FML file.";
+		
 	private enum Animate {
 		IN,
 		OUT
@@ -101,8 +101,6 @@ public class MainWindowController {
 	}
 	
 	private enum DetailAreaSection {
-		CREATE,
-		DELETE,
 		CREATE_BY_FILE
 	}
 	
@@ -111,7 +109,6 @@ public class MainWindowController {
 	private String selectedFmlPath = "";
 	private FolderTreeItem rootFolderTreeItem = null;
 	
-	private FmlSyntaxChecker fmlSyntaxChecker = FmlSyntaxChecker.getInstance();
 	private FmlParser fmlParser = FmlParser.getInstance();
 	private FolderWriter folderWriter = FolderWriter.getInstance();
 	private Utils utils = Utils.getInstance();
@@ -135,6 +132,8 @@ public class MainWindowController {
 	@FXML
 	private Label labelDetailAreaFmlFilePathMessage;
 	@FXML
+	private Label labelDetailAreaExecuteResult;
+	@FXML
 	private JFXButton buttonDetailAreaExecute;
 	@FXML
 	private VBox dialogVBox;
@@ -147,7 +146,6 @@ public class MainWindowController {
 	
 	
 	// TODO: Refactor long methods, e.g. addGuiListners()
-	// TODO: Services planen, Vererbung muss rein wegen Aufgabenstellung. Lohnt sich eine eigene File Klasse, die die java.io.File erweitert?
 	
 	/**
 	 * Gets called before the GUI launches. <p>
@@ -159,32 +157,26 @@ public class MainWindowController {
 	
 	/**
 	 * Animates the Detail Area in and sets the global variable activeDetailAreaSection according to the pressed button.
-	 *
-	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleMainAreaButtonCreateByFMLClicked(ActionEvent actionEvent) {
+	public void handleMainAreaButtonCreateByFMLClicked() {
 		activeDetailAreaSection = DetailAreaSection.CREATE_BY_FILE;
 		showDetailArea(Animate.IN);
 	}
 	
 	/**
 	 * Handles the onAction event when the close button in the details area is clicked.
-	 *
-	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaButtonCloseClicked(ActionEvent actionEvent) {
+	public void handleDetailAreaButtonCloseClicked() {
 		showDetailArea(Animate.OUT);
 	}
 	
 	/**
 	 * Creates and shows a directory chooser. Writes the path of the selected directory into the text field.
-	 *
-	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaButtonOpenRootFolderClicked(ActionEvent actionEvent) {
+	public void handleDetailAreaButtonOpenRootFolderClicked() {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle(DIRECTORY_CHOOSER_WINDOW_TITLE);
 		dirChooser.setInitialDirectory(new File(DEFAULT_DIRECTORY));
@@ -207,7 +199,7 @@ public class MainWindowController {
 	
 	//JAVA DOC
 	@FXML
-	public void handleDetailAreaButtonOpenFmlFileClicked(ActionEvent actionEvent) {
+	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(FILE_CHOOSER_WINDOW_TITLE);
 		fileChooser.setInitialDirectory(new File(DEFAULT_DIRECTORY));
@@ -223,31 +215,32 @@ public class MainWindowController {
 	/**
 	 * Handles the onAction event which gets activated when the button "create" in the detail area
 	 * is clicked
-	 *
-	 * @param actionEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleDetailAreaButtonExecuteClicked(ActionEvent actionEvent) {
-		folderWriter.writeFoldersToDisk(rootFolderTreeItem);
+	public void handleDetailAreaButtonExecuteClicked() {
+		if (folderWriter.writeFoldersToDisk(rootFolderTreeItem)) {
+			activateLabel(labelDetailAreaExecuteResult, "Success", MessageType.SUCCESS);
+			fadeGUIComponent(Fade.OUT,
+					labelDetailAreaExecuteResult,
+					VERY_LARGE_ANIMATION_DURATION_IN_MS);
+		} else {
+			showDialog(ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE, ERROR_DIALOG_TITLE);
+		}
 	}
 	
 	/**
 	 * Handles the mouse click event when the "created by" label in the main menu is clicked.
-	 *
-	 * @param mouseEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleMainMenuLabelCreatedByClicked(MouseEvent mouseEvent) {
+	public void handleMainMenuLabelCreatedByClicked() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
 	/**
 	 * Handles the mouse click event when the header in the main menu is clicked.
-	 *
-	 * @param mouseEvent the action event provided by the button
 	 */
 	@FXML
-	public void handleHeaderMainMenuClick(MouseEvent mouseEvent) {
+	public void handleHeaderMainMenuClick() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
@@ -262,7 +255,7 @@ public class MainWindowController {
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if (utils.isUserInputADirectory(newValue)) {
-						setLabelDetailAreaMessageText(labelDetailAreaRootPathMessage,
+						activateLabel(labelDetailAreaRootPathMessage,
 								MESSAGE_TEXT_DIRECTORY_VALID,
 								MessageType.SUCCESS);
 						
@@ -272,7 +265,7 @@ public class MainWindowController {
 							buttonDetailAreaExecute.setDisable(false);
 						}
 					} else {
-						setLabelDetailAreaMessageText(labelDetailAreaRootPathMessage,
+						activateLabel(labelDetailAreaRootPathMessage,
 								MESSAGE_TEXT_DIRECTORY_INVALID, MessageType.ERROR);
 						selectedRootPath = "";
 						
@@ -283,7 +276,7 @@ public class MainWindowController {
 		textFieldDetailAreaFmlFilePath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if (utils.isUserInputAFmlFile(newValue)) {
-						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,
+						activateLabel(labelDetailAreaFmlFilePathMessage,
 								MESSAGE_TEXT_FML_VALID,
 								MessageType.SUCCESS);
 						
@@ -299,18 +292,18 @@ public class MainWindowController {
 								makeFolderTreePreviewVisible();
 							} catch (FMLSyntaxException e) {
 								log.error(e.getMessage());
-								showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, "ERROR");
+								showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
 								
 								textFieldDetailAreaFmlFilePath.setText("");
 							} catch (IOException e) {
 								log.error(e.getMessage());
-								showDialog("There was a problem with loading the FML file!", "ERROR");
+								showDialog("There was a problem with loading the FML file!", ERROR_DIALOG_TITLE);
 								
 								textFieldDetailAreaFmlFilePath.setText("");
 							}
 						}
 					} else {
-						setLabelDetailAreaMessageText(labelDetailAreaFmlFilePathMessage,
+						activateLabel(labelDetailAreaFmlFilePathMessage,
 								MESSAGE_TEXT_FML_INVALID, MessageType.ERROR);
 						selectedFmlPath = "";
 						
@@ -323,11 +316,10 @@ public class MainWindowController {
 		if (rootFolderTreeItem != null) {
 			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName() + " (root)");
 			
-			root = utils.putFolderTreeIntoTreeItems(root, rootFolderTreeItem);
+			root = utils.convertFolderTreeIntoTreeItem(root, rootFolderTreeItem);
 			
 			expandTree(root);
 			treeViewDetailArea.setRoot(root);
-//			treeViewDetailArea.setShowRoot(false);
 		}
 	}
 	
@@ -348,7 +340,7 @@ public class MainWindowController {
 	 * @param text        the text of the label
 	 * @param messageType SUCCESS = text color green | ERROR = text color red
 	 */
-	private void setLabelDetailAreaMessageText(Label label, String text, MessageType messageType) {
+	private void activateLabel(Label label, String text, MessageType messageType) {
 		label.setOpacity(1);
 		label.setText(text);
 		
@@ -410,14 +402,6 @@ public class MainWindowController {
 	 */
 	private void customizeDetailAreaForSection(DetailAreaSection section) {
 		switch (section) {
-			case CREATE:
-				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_CREATE);
-				buttonDetailAreaExecute.setText(BUTTON_DETAIL_AREA_EXECUTE_TEXT_CREATE);
-				break;
-			case DELETE:
-				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_DELETE);
-				buttonDetailAreaExecute.setText(BUTTON_DETAIL_AREA_EXECUTE_TEXT_DELETE);
-				break;
 			case CREATE_BY_FILE:
 				labelDetailAreaTitle.setText(LABEL_DETAIL_AREA_TITLE_TEXT_CREATE_BY_FILE);
 				buttonDetailAreaExecute.setText(BUTTON_DETIAL_AREA_EXECUTE_TEXT_CREATE_BY_FILE);
@@ -456,29 +440,23 @@ public class MainWindowController {
 	 * @param fade Fade.IN = Animating opacity from 0 - 1; Fade.OUT = Animating opacity from 1 - 0
 	 */
 	private void fadeMainAreaHeader(Fade fade) {
-		FadeTransition fadeTransTitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelMainAreaHeaderTitle);
-		FadeTransition fadeTransSubtitle
-				= new FadeTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), labelMainAreaHeaderSubtitle);
+		fadeGUIComponent(fade, labelMainAreaHeaderTitle, LARGE_ANIMATION_DURATION_IN_MS);
+		fadeGUIComponent(fade, labelMainAreaHeaderSubtitle, LARGE_ANIMATION_DURATION_IN_MS);
+	}
+	
+	private void fadeGUIComponent(Fade fadeDirection, Node component, double duration) {
+		FadeTransition fadeTransitionComponent = new FadeTransition(Duration.millis(duration), component);
 		
-		if (fade == Fade.IN) {
-			fadeTransTitle.setFromValue(0.0);
-			fadeTransTitle.setToValue(1.0);
+		if (fadeDirection == Fade.IN) {
+			fadeTransitionComponent.setFromValue(0.0);
+			fadeTransitionComponent.setToValue(1.0);
 			
-			fadeTransSubtitle.setFromValue(0.0);
-			fadeTransSubtitle.setToValue(1.0);
-			
-			fadeTransTitle.play();
-			fadeTransSubtitle.play();
+			fadeTransitionComponent.play();
 		} else {
-			fadeTransTitle.setFromValue(1.0);
-			fadeTransTitle.setToValue(0.0);
+			fadeTransitionComponent.setFromValue(1.0);
+			fadeTransitionComponent.setToValue(0.0);
 			
-			fadeTransSubtitle.setFromValue(1.0);
-			fadeTransSubtitle.setToValue(0.0);
-			
-			fadeTransTitle.play();
-			fadeTransSubtitle.play();
+			fadeTransitionComponent.play();
 		}
 	}
 	

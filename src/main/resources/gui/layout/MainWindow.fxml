@@ -17,7 +17,7 @@
 			<Insets top="20" left="20" bottom="20" right="20"/>
 		</padding>
 		<Label fx:id="labelDialogTitle"
-				text="Über File Wizard" textAlignment="CENTER"
+			   text="Über File Wizard" textAlignment="CENTER"
 			   styleClass="dialog-title"/>
 		<Label fx:id="labelDialogContent"
 			   textAlignment="CENTER"
@@ -175,9 +175,14 @@
 					<Insets bottom="25"/>
 				</padding>
 				
+				<Label fx:id="labelDetailAreaExecuteResult"
+					   translateX="-20"
+					   prefWidth="150"
+					   styleClass="detail-area-title"/>
 				<JFXButton fx:id="buttonDetailAreaExecute"
 						   onAction="#handleDetailAreaButtonExecuteClicked"
 						   text="Create!" styleClass="button-large-detail-area"
+						   translateX="-75"
 						   disable="true" focusTraversable="false"/>
 			</HBox>
 		</bottom>

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class FmlSyntaxChecker {
@@ -12,6 +11,7 @@ public class FmlSyntaxChecker {
 	private static final Logger log = LogManager.getLogger();
 	private static FmlSyntaxChecker instance = new FmlSyntaxChecker();
 	
+	public static final String FML_KEYWORD = "+";
 	private List<Character> validSpecialCharacters = new ArrayList<>();
 	
 	
@@ -27,22 +27,45 @@ public class FmlSyntaxChecker {
 	}
 	
 	public boolean isFmlSyntaxValid(List<String> fmlAsList) {
-		StringBuilder sb = new StringBuilder();
-		
-		for (String string : fmlAsList) {
-			sb.append(string);
-		}
-		
-		String fmlAsString = sb.toString();
+		String fmlAsString = buildStringFromList(fmlAsList);
 		
 		return checkForLegalChars(fmlAsString)
 				&& checkForNoDuplicateNames(fmlAsList)
-				&& checkIfAnyKeywordIsPresent(fmlAsList)
-				&& checkForForwardJump(fmlAsList);
+				&& checkForNoKeywordInFolderName(fmlAsList)
+				&& checkForNoForwardJump(fmlAsList);
 	}
 	
-	private boolean checkForForwardJump(List<String> fmlAsList) {
+	/**
+	 * @param fmlAsList
+	 * @return
+	 */
+	private boolean checkForNoKeywordInFolderName(List<String> fmlAsList) {
+		for (String line : fmlAsList) {
+			int lastIndexOfKeyword = getIndexOfLastKeyword(line);
+			
+			if (lastIndexOfKeyword != line.lastIndexOf(FML_KEYWORD)) {
+				log.error("Found keyword in folder name in count: " + line);
+				return false;
+			}
+		}
 		
+		return true;
+	}
+	
+	private boolean checkForNoForwardJump(List<String> fmlAsList) {
+		int numberOfKeywords;
+		int oldNumberOfKeywords = 0;
+		
+		for (String line : fmlAsList) {
+			numberOfKeywords = line.lastIndexOf("+") + 1;
+			
+			if (numberOfKeywords > oldNumberOfKeywords + 1) {
+				log.error("Illegal forword jump in line: " + line);
+				return false;
+			}
+			
+			oldNumberOfKeywords = numberOfKeywords;
+		}
 		
 		return true;
 	}
@@ -60,43 +83,55 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	private boolean checkIfAnyKeywordIsPresent(List<String> fmlAsList) {
-		for (String line : fmlAsList) {
-			if (line.startsWith("+")) {
-				return true;
-			}
-		}
-		
-		log.error("FML contains no keyword at the start of a line");
-		return false;
-	}
-	
 	private boolean checkForNoDuplicateNames(List<String> fmlAsList) {
-		HashMap<String, Integer> numberOfDuplicateFolderNames = aggregateDuplicateList(fmlAsList);
-		
-		for (String currentFolderName : numberOfDuplicateFolderNames.keySet()) {
-			if (numberOfDuplicateFolderNames.get(currentFolderName) > 1) {
-				log.error("Found a duplicate Foldername: " + currentFolderName);
-				return false;
+		for (int i = 0; i < fmlAsList.size(); i++) {
+			String currentLine = fmlAsList.get(i).toLowerCase();
+			int currentLevel = getTreeLevelFromFmlLine(currentLine);
+			
+			for (int j = i + 1; j < fmlAsList.size(); j++) {
+				String nextLine = fmlAsList.get(j).toLowerCase();
+				int nextLevel = getTreeLevelFromFmlLine(nextLine);
+				
+				if (currentLine.equals(nextLine)) {
+					log.error("Found duplicate folder names in the same tree level");
+					return false;
+				} else if (nextLevel < currentLevel) {
+					break; //there can be duplicate folder names if they are not in the same scope/level under one folder.
+					//if the next level is a higher tree level, under the next (higher) folder there can be the same name at the same tree level
+				}
 			}
 		}
 		
 		return true;
 	}
 	
-	private HashMap<String, Integer> aggregateDuplicateList(List<String> fml) {
-		HashMap<String, Integer> map = new HashMap<>();
+	private int getTreeLevelFromFmlLine(String fmlLine) {
+		return getIndexOfLastKeyword(fmlLine) + 1;
+	}
+	
+	private int getIndexOfLastKeyword(String line) {
+		int index;
 		
-		for (String line : fml) {
-			if (map.containsKey(line)) {
-				int oldValue = map.get(line);
-				map.replace(line, oldValue + 1);
-			} else {
-				map.put(line, 1);
+		for (index = 0; index < line.length(); index++) {
+			char currentChar = line.charAt(index);
+			char nextChar = line.charAt(index + 1);
+			
+			if (currentChar == '+' && nextChar != '+') {
+				break;
 			}
 		}
 		
-		return map;
+		return index;
+	}
+	
+	private String buildStringFromList(List<String> list) {
+		StringBuilder sb = new StringBuilder();
+		
+		for (String string : list) {
+			sb.append(string);
+		}
+		
+		return sb.toString();
 	}
 	
 }
