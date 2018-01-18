@@ -175,7 +175,7 @@
 					<Insets bottom="25"/>
 				</padding>
 				
-				<Label fx:id="labelDetailAreaExecuteResult"
+				<Label fx:id="labelDetailAreaExecuteSuccess"
 					   translateX="-20"
 					   prefWidth="150"
 					   styleClass="detail-area-title"/>

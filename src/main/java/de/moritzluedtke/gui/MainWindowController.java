@@ -132,7 +132,7 @@ public class MainWindowController {
 	@FXML
 	private Label labelDetailAreaFmlFilePathMessage;
 	@FXML
-	private Label labelDetailAreaExecuteResult;
+	private Label labelDetailAreaExecuteSuccess;
 	@FXML
 	private JFXButton buttonDetailAreaExecute;
 	@FXML
@@ -219,9 +219,9 @@ public class MainWindowController {
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked() {
 		if (folderWriter.writeFoldersToDisk(rootFolderTreeItem)) {
-			activateLabel(labelDetailAreaExecuteResult, "Success", MessageType.SUCCESS);
+			activateLabel(labelDetailAreaExecuteSuccess, "Success", MessageType.SUCCESS);
 			fadeGUIComponent(Fade.OUT,
-					labelDetailAreaExecuteResult,
+					labelDetailAreaExecuteSuccess,
 					VERY_LARGE_ANIMATION_DURATION_IN_MS);
 		} else {
 			showDialog(ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE, ERROR_DIALOG_TITLE);
