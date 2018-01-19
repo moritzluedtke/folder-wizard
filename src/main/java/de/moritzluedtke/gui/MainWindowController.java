@@ -8,13 +8,13 @@ import de.moritzluedtke.service.FmlParser;
 import de.moritzluedtke.service.FolderWriter;
 import de.moritzluedtke.service.Utils;
 import de.moritzluedtke.service.exception.FMLSyntaxException;
+import de.moritzluedtke.service.model.CustomTreeItem;
 import de.moritzluedtke.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
-
+@SuppressWarnings("Duplicates")
 public class MainWindowController {
 	
 	private static final Logger log = LogManager.getLogger();
@@ -54,22 +54,22 @@ public class MainWindowController {
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
 	
 	private static final String ABOUT_DIALOG_TITLE = "About File Wizard";
-	private static final String ABOUT_DIALOG_CONTENT_TEXT =
-			"File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
-					"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
-					"\n\n" +
-					"Die Hauptfunktionen ist das erstellen von Ordnerstrukturen " +
-					"anhand von FML (FolderTreeItem Modelling Language) Dateien.\n" +
-					"\n\n" +
-					"Benutzte Technologien:\n" +
-					"- Java 8 + JavaFX 2\n" +
-					"- JFoenix\n" +
-					"- Logfj2\n" +
-					"- Gradle\n" +
-					"- IntelliJ 2017 Community & Professional\n" +
-					"- Bitbucket\n" +
-					"\n" +
-					"© 2018 Moritz Lüdtke";
+	private static final String ABOUT_DIALOG_CONTENT_TEXT
+			= "File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
+			"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
+			"\n\n" +
+			"Die Hauptfunktionen ist das erstellen von Ordnerstrukturen " +
+			"anhand von FML (Folder Modelling Language) Dateien.\n" +
+			"\n\n" +
+			"Benutzte Technologien:\n" +
+			"- Java 8 + JavaFX 2\n" +
+			"- JFoenix\n" +
+			"- Logfj2\n" +
+			"- Gradle\n" +
+			"- IntelliJ 2017 Community & Professional\n" +
+			"- Bitbucket\n" +
+			"\n" +
+			"© 2018 Moritz Lüdtke";
 	private static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
 			= "Incorrect FML Syntax!\n\n" +
 			"Please check your file, it must not contain:\n" +
@@ -83,8 +83,9 @@ public class MainWindowController {
 	public static final String ERROR_DIALOG_TITLE = "ERROR";
 	public static final String ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE
 			= "Can not create folder structure.\n" +
-			"Please check that there is no folder already in the specified directory that is also in the FML file.";
-		
+			"Please check that there is no folder in the specified directory\n" +
+			"that is also in the FML file.";
+	
 	private enum Animate {
 		IN,
 		OUT
@@ -145,7 +146,7 @@ public class MainWindowController {
 	private JFXTreeView treeViewDetailArea;
 	
 	
-	// TODO: Refactor long methods, e.g. addGuiListners()
+	// TODO: Java Doc
 	
 	/**
 	 * Gets called before the GUI launches. <p>
@@ -190,7 +191,7 @@ public class MainWindowController {
 					textFieldDetailAreaRootPath.setText(selectedDirectory.getCanonicalPath());
 				} catch (IOException e) {
 					log.error(String.format(
-							"IO Exception \"%s\" occured while setting the textFieldDetailAreaRootPath",
+							"IO Exception \"%s\" occured while choosing a root folder",
 							e.getMessage()));
 				}
 			}
@@ -223,6 +224,8 @@ public class MainWindowController {
 			fadeGUIComponent(Fade.OUT,
 					labelDetailAreaExecuteSuccess,
 					VERY_LARGE_ANIMATION_DURATION_IN_MS);
+			
+			clearUserInputFile();
 		} else {
 			showDialog(ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE, ERROR_DIALOG_TITLE);
 		}
@@ -262,7 +265,7 @@ public class MainWindowController {
 						selectedRootPath = newValue;
 						
 						if (!selectedFmlPath.isEmpty() && utils.isUserInputAFmlFile(selectedFmlPath)) {
-							buttonDetailAreaExecute.setDisable(false);
+							makeFolderStructureFromFML();
 						}
 					} else {
 						activateLabel(labelDetailAreaRootPathMessage,
@@ -283,28 +286,12 @@ public class MainWindowController {
 						selectedFmlPath = newValue;
 						
 						if (!selectedRootPath.isEmpty() && utils.isUserInputADirectory(selectedRootPath)) {
-							
-							try {
-								rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
-										selectedRootPath);
-								
-								buttonDetailAreaExecute.setDisable(false);
-								makeFolderTreePreviewVisible();
-							} catch (FMLSyntaxException e) {
-								log.error(e.getMessage());
-								showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
-								
-								textFieldDetailAreaFmlFilePath.setText("");
-							} catch (IOException e) {
-								log.error(e.getMessage());
-								showDialog("There was a problem with loading the FML file!", ERROR_DIALOG_TITLE);
-								
-								textFieldDetailAreaFmlFilePath.setText("");
-							}
+							makeFolderStructureFromFML();
 						}
 					} else {
 						activateLabel(labelDetailAreaFmlFilePathMessage,
 								MESSAGE_TEXT_FML_INVALID, MessageType.ERROR);
+						
 						selectedFmlPath = "";
 						
 						buttonDetailAreaExecute.setDisable(true);
@@ -312,25 +299,42 @@ public class MainWindowController {
 				});
 	}
 	
+	private void makeFolderStructureFromFML() {
+		try {
+			rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
+					selectedRootPath);
+			
+			buttonDetailAreaExecute.setDisable(false);
+			makeFolderTreePreviewVisible();
+		} catch (FMLSyntaxException e) {
+			log.error(e.getMessage());
+			showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
+			
+			textFieldDetailAreaFmlFilePath.setText("");
+		} catch (IOException e) {
+			log.error(e.getMessage());
+			showDialog("There was a problem with loading the FML file!", ERROR_DIALOG_TITLE);
+			
+			textFieldDetailAreaFmlFilePath.setText("");
+		}
+	}
+	
 	private void makeFolderTreePreviewVisible() {
 		if (rootFolderTreeItem != null) {
-			TreeItem<String> root = new TreeItem<>(rootFolderTreeItem.getName() + " (root)");
+			CustomTreeItem<String> root = new CustomTreeItem<>(rootFolderTreeItem.getName() + " (root)");
 			
 			root = utils.convertFolderTreeIntoTreeItem(root, rootFolderTreeItem);
 			
-			expandTree(root);
+			root.expandTree();
 			treeViewDetailArea.setRoot(root);
 		}
 	}
 	
-	private void expandTree(TreeItem<?> item) {
-		if (item != null && !item.isLeaf()) {
-			item.setExpanded(true);
-			
-			for (TreeItem<?> child : item.getChildren()) {
-				expandTree(child);
-			}
-		}
+	private void clearUserInputFile() {
+		textFieldDetailAreaFmlFilePath.setText("");
+		labelDetailAreaFmlFilePathMessage.setOpacity(0);
+		
+		treeViewDetailArea.setRoot(null);
 	}
 	
 	/**

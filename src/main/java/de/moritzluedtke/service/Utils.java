@@ -1,7 +1,7 @@
 package de.moritzluedtke.service;
 
+import de.moritzluedtke.service.model.CustomTreeItem;
 import de.moritzluedtke.service.model.FolderTreeItem;
-import javafx.scene.control.TreeItem;
 
 import java.io.File;
 
@@ -17,10 +17,10 @@ public class Utils {
 		return instance;
 	}
 	
-	public TreeItem<String> convertFolderTreeIntoTreeItem(TreeItem<String> currentTreeRoot,
-														  FolderTreeItem currentFolderRoot) {
+	public CustomTreeItem<String> convertFolderTreeIntoTreeItem(CustomTreeItem<String> currentTreeRoot,
+																FolderTreeItem currentFolderRoot) {
 			for (FolderTreeItem folderItem : currentFolderRoot.getChildren()) {
-				TreeItem<String> newTreeItem = new TreeItem<>(folderItem.getName());
+				CustomTreeItem<String> newTreeItem = new CustomTreeItem<>(folderItem.getName());
 				currentTreeRoot.getChildren().add(newTreeItem);
 				
 				if (folderItem.hasChildren()) {
