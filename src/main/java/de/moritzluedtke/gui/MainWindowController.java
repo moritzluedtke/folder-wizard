@@ -85,6 +85,7 @@ public class MainWindowController {
 			= "Can not create folder structure.\n" +
 			"Please check that there is no folder in the specified directory\n" +
 			"that is also in the FML file.";
+	public static final String IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE = "There was a problem with loading the FML file!";
 	
 	private enum Animate {
 		IN,
@@ -146,14 +147,12 @@ public class MainWindowController {
 	private JFXTreeView treeViewDetailArea;
 	
 	
-	// TODO: Java Doc
-	
 	/**
-	 * Gets called before the GUI launches. <p>
-	 * Adds the GUI change listeners.
+	 * Gets called before the GUI window launches. <p>
+	 * Adds the GUI change listeners which listen to any input change into the text field for the root/fml path.
 	 */
 	public void initialize() {
-		addGUIChangeListeners();
+		addTextFieldChangeListeners();
 	}
 	
 	/**
@@ -167,6 +166,7 @@ public class MainWindowController {
 	
 	/**
 	 * Handles the onAction event when the close button in the details area is clicked.
+	 * Animates the detail area out.
 	 */
 	@FXML
 	public void handleDetailAreaButtonCloseClicked() {
@@ -174,7 +174,8 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Creates and shows a directory chooser. Writes the path of the selected directory into the text field.
+	 * Creates and shows a directory chooser/browser.
+	 * Writes the path of the selected directory into the text field if its valid.
 	 */
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked() {
@@ -198,7 +199,12 @@ public class MainWindowController {
 		}
 	}
 	
-	//JAVA DOC
+	/**
+	 * Creates and shows a file chooser/browser.
+	 * Writes the path of the selected file into the corresponding text field if it is valid.
+	 * <p>
+	 * The file must be of type .fml
+	 */
 	@FXML
 	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		FileChooser fileChooser = new FileChooser();
@@ -214,8 +220,10 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Handles the onAction event which gets activated when the button "create" in the detail area
-	 * is clicked
+	 * Handles the onAction event which gets activated when the button "execute" in the detail area is clicked.
+	 * Writes the Folder Tree into actual folders on the harddrive.
+	 * Shows a "Success" label on success and an error dialog in case of an error.
+	 * Calls {@link MainWindowController#clearFMLPath()}.
 	 */
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked() {
@@ -225,7 +233,7 @@ public class MainWindowController {
 					labelDetailAreaExecuteSuccess,
 					VERY_LARGE_ANIMATION_DURATION_IN_MS);
 			
-			clearUserInputFile();
+			clearFMLPath();
 		} else {
 			showDialog(ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE, ERROR_DIALOG_TITLE);
 		}
@@ -233,6 +241,7 @@ public class MainWindowController {
 	
 	/**
 	 * Handles the mouse click event when the "created by" label in the main menu is clicked.
+	 * Shows an about dialog (calls {@link MainWindowController#showDialog(String, String)}).
 	 */
 	@FXML
 	public void handleMainMenuLabelCreatedByClicked() {
@@ -241,6 +250,7 @@ public class MainWindowController {
 	
 	/**
 	 * Handles the mouse click event when the header in the main menu is clicked.
+	 * Shows an about dialog (calls {@link MainWindowController#showDialog(String, String)}).
 	 */
 	@FXML
 	public void handleHeaderMainMenuClick() {
@@ -248,13 +258,14 @@ public class MainWindowController {
 	}
 	
 	/**
-	 * Adds the GUI change listeners. These listenes get activated when the values they are listening to get changed.
+	 * Adds the text field change listeners. These listenes get activated when the values they are listening to
+	 * (text value) get changed.
 	 * <p/>
-	 * {@link MainWindowController#textFieldDetailAreaRootPath} Listener = Whenever the text inside the Text Field
-	 * changes the new value will be check if it is a valid directory.
-	 * Also the message underneath the Text Field will be updated.
+	 * Both Listeners = Whenever the text inside the text field
+	 * changes the new value will be check if it's valid.
+	 * Also the message underneath the text field will be updated.
 	 */
-	private void addGUIChangeListeners() {
+	private void addTextFieldChangeListeners() {
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if (utils.isUserInputADirectory(newValue)) {
@@ -294,11 +305,17 @@ public class MainWindowController {
 						
 						selectedFmlPath = "";
 						
+						emptyFolderPreview(null);
 						buttonDetailAreaExecute.setDisable(true);
 					}
 				});
 	}
 	
+	/**
+	 * Calls the FMLParser and gives him the selected FML path + the root path.
+	 * When no exception occurs, the execute button gets activated and the folder preview will be made.
+	 * If an exception occurs, it will be catched and an error dialog will be shown.
+	 */
 	private void makeFolderStructureFromFML() {
 		try {
 			rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
@@ -313,7 +330,7 @@ public class MainWindowController {
 			textFieldDetailAreaFmlFilePath.setText("");
 		} catch (IOException e) {
 			log.error(e.getMessage());
-			showDialog("There was a problem with loading the FML file!", ERROR_DIALOG_TITLE);
+			showDialog(IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
 			
 			textFieldDetailAreaFmlFilePath.setText("");
 		}
@@ -326,15 +343,20 @@ public class MainWindowController {
 			root = utils.convertFolderTreeIntoTreeItem(root, rootFolderTreeItem);
 			
 			root.expandTree();
-			treeViewDetailArea.setRoot(root);
+			emptyFolderPreview(root);
 		}
 	}
 	
-	private void clearUserInputFile() {
+	private void clearFMLPath() {
 		textFieldDetailAreaFmlFilePath.setText("");
 		labelDetailAreaFmlFilePathMessage.setOpacity(0);
+		selectedFmlPath = "";
 		
-		treeViewDetailArea.setRoot(null);
+		emptyFolderPreview(null);
+	}
+	
+	private void emptyFolderPreview(CustomTreeItem<String> tree) {
+		treeViewDetailArea.setRoot(tree);
 	}
 	
 	/**
