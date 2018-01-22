@@ -15,6 +15,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * "Main" class. Creates and shows the GUI based on the FXML file.
+ */
 public class Starter extends Application {
 	private static final int MAIN_WINDOW_WIDTH = 900;
 	private static final int MAIN_WINDOW_HEIGHT = 570;
@@ -25,20 +28,19 @@ public class Starter extends Application {
 	
 	/**
 	 * Main method used to start the GUI.
-	 * @param args takes arguments from the command line
+	 * @param args contains the arguments from the command line
 	 */
 	public static void main(String[] args) {
 		launch(args);
 	}
 	
 	/**
-	 * JavaFX start method. Creates a {@link URL} to the FXML file
-	 * and gives that to the method which creates the primary stage.
+	 * JavaFX start method. Loads the FXML file for the main window.
 	 * <p>
-	 * Also enables font smoothing.
+	 * Also enables font smoothing and calls {@link #createMainWindowGUI(Stage, URL) createMainWindowGUI()}
 	 *
 	 * @param primaryStage	takes the primary stage from the JavaFX framework
-	 * @throws Exception	generic exception when something goes wrong
+	 * @throws Exception	gets thrown when something goes wrong
 	 */
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -54,10 +56,10 @@ public class Starter extends Application {
 	}
 	
 	/**
-	 * Closes all GUI windows so that the program can really stop. Without the two method calls it sometimes can happen
+	 * Closes all GUI windows so that the program can really stop. Without the two method calls it is possible
 	 * that the programm still runs in the background although all GUI windows are closed.
 	 *
-	 * @throws Exception generic exception if something goes wrong
+	 * @throws Exception gets thrown when something goes wrong
 	 */
 	@Override
 	public void stop() throws Exception {

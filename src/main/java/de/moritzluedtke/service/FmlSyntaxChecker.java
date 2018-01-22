@@ -6,6 +6,10 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class which checks that there is no syntax error in a given FML file.<p>
+ * Uses the singelton pattern as there is no need for more than one FolderWriter at any given time during runtime.
+ */
 public class FmlSyntaxChecker {
 	
 	private static final Logger log = LogManager.getLogger();
@@ -16,6 +20,7 @@ public class FmlSyntaxChecker {
 	
 	
 	private FmlSyntaxChecker() {
+		// Loads all valid Special Characters into the corresponding ArrayList
 		validSpecialCharacters.add('_');
 		validSpecialCharacters.add('-');
 		validSpecialCharacters.add(' ');
@@ -26,6 +31,12 @@ public class FmlSyntaxChecker {
 		return instance;
 	}
 	
+	/**
+	 * Checks the FML for syntax errors.
+	 *
+	 * @param fmlAsList the FML in List form
+	 * @return true if the FML has no syntax errors in it
+	 */
 	public boolean isFmlSyntaxValid(List<String> fmlAsList) {
 		String fmlAsString = buildStringFromList(fmlAsList);
 		
@@ -36,8 +47,64 @@ public class FmlSyntaxChecker {
 	}
 	
 	/**
-	 * @param fmlAsList
+	 * Iterates through every character in the FML and checks if it is a valid character.
+	 *
+	 * @param fml the whole fml in one String
 	 * @return
+	 */
+	private boolean checkForLegalChars(String fml) {
+		for (Character currentCharFromFml : fml.toCharArray()) {
+			if (!validSpecialCharacters.contains(currentCharFromFml)
+					&& !Character.isLetter(currentCharFromFml)
+					&& !Character.isDigit(currentCharFromFml)) {
+				log.error("FML contains illegal character: " + currentCharFromFml);
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Checks that for every folder name there is no duplicate name in the same scope/tree level.
+	 *
+	 * @param fmlAsList the FML in form of a list
+	 * @return true if the FML is free of duplicate names in the same scope
+	 */
+	private boolean checkForNoDuplicateNames(List<String> fmlAsList) {
+		// There can be duplicate folder names if they are not in the same scope/level under one folder.
+		
+		for (int i = 0; i < fmlAsList.size(); i++) {
+			String currentLine = fmlAsList.get(i).toLowerCase();
+			int currentLevel = getTreeLevelFromFmlLine(currentLine);
+			
+			for (int j = i + 1; j < fmlAsList.size(); j++) {
+				String nextLine = fmlAsList.get(j).toLowerCase();
+				int nextLevel = getTreeLevelFromFmlLine(nextLine);
+				
+				// If the next level is higher, than nothing happens
+				
+				// If the next line is the same as the current one, an error occurs
+				if (currentLine.equals(nextLine)) {
+					log.error("Found duplicate folder names in the same tree level");
+					return false;
+					
+					// If the next level is higher in the tree (lower number), then the lopp will break. After this
+					// there can be the same folder name because it will have a different parent than the current one.
+				} else if (nextLevel < currentLevel) {
+					break;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Checks if the keyword is in any folder name.
+	 *
+	 * @param fmlAsList the FML in form of a list
+	 * @return true if every folder name is free of keywords
 	 */
 	private boolean checkForNoKeywordInFolderName(List<String> fmlAsList) {
 		for (String line : fmlAsList) {
@@ -52,6 +119,12 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
+	/**
+	 * Checks if there is any forword jump (e.g. jumping from tree level 2 to 4) in the FML.
+	 *
+	 * @param fmlAsList the FML in form of a list
+	 * @return true if no forward jump was found
+	 */
 	private boolean checkForNoForwardJump(List<String> fmlAsList) {
 		int numberOfKeywords;
 		int oldNumberOfKeywords = 0;
@@ -70,51 +143,28 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	private boolean checkForLegalChars(String fml) {
-		for (Character currentCharFromFml : fml.toCharArray()) {
-			if (!validSpecialCharacters.contains(currentCharFromFml)
-					&& !Character.isLetter(currentCharFromFml)
-					&& !Character.isDigit(currentCharFromFml)) {
-				log.error("FML contains illegal character: " + currentCharFromFml);
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	
-	private boolean checkForNoDuplicateNames(List<String> fmlAsList) {
-		for (int i = 0; i < fmlAsList.size(); i++) {
-			String currentLine = fmlAsList.get(i).toLowerCase();
-			int currentLevel = getTreeLevelFromFmlLine(currentLine);
-			
-			for (int j = i + 1; j < fmlAsList.size(); j++) {
-				String nextLine = fmlAsList.get(j).toLowerCase();
-				int nextLevel = getTreeLevelFromFmlLine(nextLine);
-				
-				if (currentLine.equals(nextLine)) {
-					log.error("Found duplicate folder names in the same tree level");
-					return false;
-				} else if (nextLevel < currentLevel) {
-					break; //there can be duplicate folder names if they are not in the same scope/level under one folder.
-					//if the next level is a higher tree level, under the next (higher) folder there can be the same name at the same tree level
-				}
-			}
-		}
-		
-		return true;
-	}
-	
+	/**
+	 * Gets the tree level/scope from one FML line.
+	 *
+	 * @param fmlLine one FML line with keywords
+	 * @return tree level from that line
+	 */
 	private int getTreeLevelFromFmlLine(String fmlLine) {
 		return getIndexOfLastKeyword(fmlLine) + 1;
 	}
 	
-	private int getIndexOfLastKeyword(String line) {
+	/**
+	 * Gets the index of the last keyword in a given line.
+	 *
+	 * @param fmlLine one FML line
+	 * @return index of the last keyword
+	 */
+	private int getIndexOfLastKeyword(String fmlLine) {
 		int index;
 		
-		for (index = 0; index < line.length(); index++) {
-			char currentChar = line.charAt(index);
-			char nextChar = line.charAt(index + 1);
+		for (index = 0; index < fmlLine.length(); index++) {
+			char currentChar = fmlLine.charAt(index);
+			char nextChar = fmlLine.charAt(index + 1);
 			
 			if (currentChar == '+' && nextChar != '+') {
 				break;
@@ -124,6 +174,12 @@ public class FmlSyntaxChecker {
 		return index;
 	}
 	
+	/**
+	 * Builds one string out of a List of Strings.
+	 *
+	 * @param list list of strings
+	 * @return concatenated string
+	 */
 	private String buildStringFromList(List<String> list) {
 		StringBuilder sb = new StringBuilder();
 		
