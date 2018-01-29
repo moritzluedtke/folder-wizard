@@ -185,35 +185,35 @@ public class MainWindowController {
 	
 	/**
 	 * Shows a {@link DirectoryChooser} by calling {@link #getDirectoryFromDirChooser(String)}. <p>
-	 * Also calls {@link #putChoosenRootPathIntoTextField(File)} and gives it the selected directory.
+	 * Also calls {@link #putSelectedRootPathIntoTextField(File)} and gives it the selected directory.
 	 */
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked() {
 		if (selectedRootPath.isEmpty()) {
 			File selectedDirectory = getDirectoryFromDirChooser(DEFAULT_DIRECTORY_FOR_DIR_CHOOSER);
 			
-			putChoosenRootPathIntoTextField(selectedDirectory);
+			putSelectedRootPathIntoTextField(selectedDirectory);
 		} else {
 			File selectedDirectory = getDirectoryFromDirChooser(selectedRootPath);
 			
-			putChoosenRootPathIntoTextField(selectedDirectory);
+			putSelectedRootPathIntoTextField(selectedDirectory);
 		}
 	}
 	
 	/**
 	 * Shows a {@link FileChooser} by calling {@link #getFileFromFileChooser(String)}. <p>
-	 * Also calls {@link #putChoosenFmlPathIntoTextField(File)} and gives it the selected file.
+	 * Also calls {@link #putSelectedFmlPathIntoTextField(File)} and gives it the selected file.
 	 */
 	@FXML
 	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		if (selectedFmlPath.isEmpty()) {
 			File selectedFmlFile = getFileFromFileChooser(DEFAULT_DIRECTORY_FOR_DIR_CHOOSER);
 			
-			putChoosenFmlPathIntoTextField(selectedFmlFile);
+			putSelectedFmlPathIntoTextField(selectedFmlFile);
 		} else {
 			File selectedFmlFile = getFileFromFileChooser(utils.getDirectoryFromFilePath(selectedFmlPath));
 			
-			putChoosenFmlPathIntoTextField(selectedFmlFile);
+			putSelectedFmlPathIntoTextField(selectedFmlFile);
 		}
 	}
 	
@@ -261,7 +261,7 @@ public class MainWindowController {
 	 *
 	 * @param file the selected fml file from the file chooser
 	 */
-	private void putChoosenFmlPathIntoTextField(File file) {
+	private void putSelectedFmlPathIntoTextField(File file) {
 		if (file != null && !file.getPath().isEmpty()) {
 			textFieldDetailAreaFmlFilePath.setText(file.getPath());
 		}
@@ -288,7 +288,7 @@ public class MainWindowController {
 	 *
 	 * @param dir the selected dir from the dir chooser
 	 */
-	private void putChoosenRootPathIntoTextField(File dir) {
+	private void putSelectedRootPathIntoTextField(File dir) {
 		if (dir != null) {
 			if (utils.isUserInputADirectory(dir.getPath())) {
 				textFieldDetailAreaRootPath.setText(dir.getPath());
