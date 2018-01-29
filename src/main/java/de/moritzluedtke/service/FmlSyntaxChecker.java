@@ -27,6 +27,11 @@ public class FmlSyntaxChecker {
 		validSpecialCharacters.add('+');
 	}
 	
+	/**
+	 * Returns the only/one existing object.
+	 *
+	 * @return the singelton object
+	 */
 	public static FmlSyntaxChecker getInstance() {
 		return instance;
 	}

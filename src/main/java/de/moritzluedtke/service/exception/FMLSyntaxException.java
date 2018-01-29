@@ -6,8 +6,9 @@ package de.moritzluedtke.service.exception;
 public class FMLSyntaxException extends Exception {
 	
 	/**
-	 * Custom error message.
-	 * @return the error message
+	 * Returns the custom error message.
+	 *
+	 * @return the custom error message
 	 */
 	@Override
 	public String getMessage() {

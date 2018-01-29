@@ -29,7 +29,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Controller class which is bound to the GUI (FXML file).
+ * Controller class which is connected to the GUI (FXML file).
  * Controls everything which is related to the GUI.
  */
 @SuppressWarnings("Duplicates")
@@ -89,7 +89,8 @@ public class MainWindowController {
 			= "Can not create folder structure.\n\n" +
 			"Please check that there is no folder in the specified directory\n" +
 			"that is also in the FML file.";
-	public static final String IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE = "There was a problem with loading the FML file!";
+	public static final String IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE
+			= "There was a problem with loading the FML file!";
 	
 	private enum Animate {
 		IN,

@@ -17,6 +17,11 @@ public class Utils {
 	
 	}
 	
+	/**
+	 * Returns the only/one existing object.
+	 *
+	 * @return the singelton object
+	 */
 	public static Utils getInstance() {
 		return instance;
 	}

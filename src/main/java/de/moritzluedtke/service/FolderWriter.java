@@ -19,6 +19,11 @@ public class FolderWriter {
 	
 	}
 	
+	/**
+	 * Returns the only/one existing object.
+	 *
+	 * @return the singelton object
+	 */
 	public static FolderWriter getInstance() {
 		return instance;
 	}
