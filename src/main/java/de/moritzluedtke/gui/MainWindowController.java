@@ -68,7 +68,7 @@ public class MainWindowController {
 			"Benutzte Technologien:\n" +
 			"- Java 8 + JavaFX 2\n" +
 			"- JFoenix\n" +
-			"- Logfj2\n" +
+			"- Log4j2\n" +
 			"- Gradle\n" +
 			"- IntelliJ 2017 Community & Professional\n" +
 			"- Bitbucket\n" +
