@@ -11,3 +11,8 @@
 /build
 /out
 /.gradle
+
+#Other
+*.png
+*.jpg
+/.metadata
