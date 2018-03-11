@@ -7,19 +7,19 @@ Diese Datei muss mit `*.fml` enden. Eine Beispiel-Datei liegt diesem ZIP-Archiv 
 - Das "Keyword", damit Folder Wizard erkennt, dass die Zeile ein Ordner werden soll, ist das `+`.
 - Jede Zeile, die nicht mit einem oder mehreren `+` anfängt, ist ein Kommentar.
 - Die einzelnen Ebenen der Ordnerstruktur werden mit weiteren `+` Zeichen gekennzeichnet, siehe Bsp. unten.
+- Nach jedem Ordner muss eine neue Zeile angefangen werden.
 - Die Ordnernamen dürfen nur aus a-z, A-Z, 0-9, _, -, + und einem Leerzeichen bestehen.
 - Alle Zeichen, die auf den ersten Block an `+` Zeichen folgen, werden als Ordnername gewertet.
 - HINWEIS: Folder Wizard prüft automatisch, ob die FML Datei den Syntax- und gängigen Windows Ordner-Erstellungs-Regeln entspricht.
    
-   Zusätzlich prüft Folder Wizard, ob ein "Vorwärtssprung" existiert. Ein Vorwärtsprung liegt vor, 
-   wenn in der FML Datei ein Unterordner erstellt wird, der mehr als eine Ebene tiefer liegt.
-   Der/die Ordner zwischen diesem und dem vorigen Ordner fehlt/fehlen dann.
-   Ein Beispiel:
+  Zusätzlich prüft Folder Wizard, ob ein "Vorwärtssprung" existiert. Ein Vorwärtsprung liegt vor, 
+  wenn in der FML Datei ein Unterordner erstellt wird, der mehr als eine Ebene tiefer liegt.
+  Der/die Ordner zwischen diesem und dem vorigen Ordner fehlt/fehlen dann.
+  Ein Beispiel:
 
-   ```
-   +Ordner
-   +++Illegaler Ordner
-   ```   
+  +Ordner
+  
+  +++Illegaler Ordner
 
 ####FML Beispiel
 ```
