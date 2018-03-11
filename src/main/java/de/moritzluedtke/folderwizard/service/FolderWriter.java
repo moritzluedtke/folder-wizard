@@ -1,6 +1,6 @@
-package de.moritzluedtke.filewizard.service;
+package de.moritzluedtke.folderwizard.service;
 
-import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
+import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

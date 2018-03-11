@@ -1,15 +1,15 @@
-package de.moritzluedtke.filewizard.gui;
+package de.moritzluedtke.folderwizard.gui;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeView;
-import de.moritzluedtke.filewizard.service.FmlParser;
-import de.moritzluedtke.filewizard.service.FolderWriter;
-import de.moritzluedtke.filewizard.service.Utils;
-import de.moritzluedtke.filewizard.service.exception.FMLSyntaxException;
-import de.moritzluedtke.filewizard.service.model.CustomTreeItem;
-import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
+import de.moritzluedtke.folderwizard.service.FmlParser;
+import de.moritzluedtke.folderwizard.service.FolderWriter;
+import de.moritzluedtke.folderwizard.service.Utils;
+import de.moritzluedtke.folderwizard.service.exception.FMLSyntaxException;
+import de.moritzluedtke.folderwizard.service.model.CustomTreeItem;
+import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -57,20 +57,19 @@ public class MainWindowController {
 	private static final double VERY_LARGE_ANIMATION_DURATION_IN_MS = 2000;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
 	
-	private static final String ABOUT_DIALOG_TITLE = "About File Wizard";
+	private static final String ABOUT_DIALOG_TITLE = "About Folder Wizard";
 	private static final String ABOUT_DIALOG_CONTENT_TEXT
-			= "File Wizard wurde im Rahmen einer AE-Hausaufgabe in Block 4 geschrieben. " +
-			"Es dient dazu, die eigene Ordnerstruktur zu organisieren.\n" +
+			= "Folder Wizard was created as part of an homework assignment.\n\n" +
+			"It's purpose is to automatically create folder structures based upon\n" +
+			"a so called FML (Folder Modelling Language) file.\n" +
+			"In these files, the folder structure can be described using a special syntax.\n" +
 			"\n\n" +
-			"Die Hauptfunktionen ist das erstellen von Ordnerstrukturen " +
-			"anhand von FML (Folder Modelling Language) Dateien.\n" +
-			"\n\n" +
-			"Benutzte Technologien:\n" +
+			"Used technologies:\n" +
 			"- Java 8 + JavaFX 2\n" +
 			"- JFoenix\n" +
 			"- Log4j2\n" +
 			"- Gradle\n" +
-			"- IntelliJ 2017 Community & Professional\n" +
+			"- IntelliJ 2018 Community & Professional\n" +
 			"- Bitbucket\n" +
 			"\n" +
 			"© 2018 Moritz Lüdtke";

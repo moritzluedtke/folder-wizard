@@ -1,7 +1,7 @@
-package de.moritzluedtke.filewizard.service;
+package de.moritzluedtke.folderwizard.service;
 
-import de.moritzluedtke.filewizard.service.exception.FMLSyntaxException;
-import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
+import de.moritzluedtke.folderwizard.service.exception.FMLSyntaxException;
+import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 
 import java.io.IOException;
 import java.nio.file.Files;

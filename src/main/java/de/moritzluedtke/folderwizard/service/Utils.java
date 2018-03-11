@@ -1,7 +1,7 @@
-package de.moritzluedtke.filewizard.service;
+package de.moritzluedtke.folderwizard.service;
 
-import de.moritzluedtke.filewizard.service.model.CustomTreeItem;
-import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
+import de.moritzluedtke.folderwizard.service.model.CustomTreeItem;
+import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 
 import java.io.File;
 

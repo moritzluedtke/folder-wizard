@@ -1,4 +1,4 @@
-package de.moritzluedtke.filewizard;
+package de.moritzluedtke.folderwizard;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -79,7 +79,7 @@ public class Starter extends Application {
 	private Stage createMainWindowGUI(Stage primaryStage, URL resourceURL) {
 		try {
 			Parent root = FXMLLoader.load(resourceURL);
-			primaryStage.setTitle("FileOrganizer - by Moritz Lüdtke");
+			primaryStage.setTitle("Folder Wizard - by Moritz Lüdtke");
 			primaryStage.setScene(new Scene(root, MAIN_WINDOW_WIDTH, MAIN_WINDOW_HEIGHT));
 			primaryStage.setResizable(false);
 			

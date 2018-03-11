@@ -1,4 +1,4 @@
-package de.moritzluedtke.filewizard.service.exception;
+package de.moritzluedtke.folderwizard.service.exception;
 
 /**
  * Custom exception in case an FML syntax rule gets broken.

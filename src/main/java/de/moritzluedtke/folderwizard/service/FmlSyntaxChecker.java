@@ -1,4 +1,4 @@
-package de.moritzluedtke.filewizard.service;
+package de.moritzluedtke.folderwizard.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -16,16 +16,16 @@ public class FmlSyntaxChecker {
 	private static FmlSyntaxChecker instance = new FmlSyntaxChecker();
 	
 	private static final String FML_KEYWORD = "+";
-	private List<Character> validSpecialCharacters = new ArrayList<>();
+	private List<Character> legalSpecialCharacters = new ArrayList<>();
 	
 	/**
 	 * Loads all valid Special Characters into the corresponding ArrayList.
 	 */
 	private FmlSyntaxChecker() {
-		validSpecialCharacters.add('_');
-		validSpecialCharacters.add('-');
-		validSpecialCharacters.add(' ');
-		validSpecialCharacters.add('+');
+		legalSpecialCharacters.add('_');
+		legalSpecialCharacters.add('-');
+		legalSpecialCharacters.add(' ');
+		legalSpecialCharacters.add('+');
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class FmlSyntaxChecker {
 	 */
 	private boolean checksIfAllCharsAreLegal(String fml) {
 		for (Character currentCharFromFml : fml.toCharArray()) {
-			if (!validSpecialCharacters.contains(currentCharFromFml)
+			if (!legalSpecialCharacters.contains(currentCharFromFml)
 					&& !Character.isLetter(currentCharFromFml)
 					&& !Character.isDigit(currentCharFromFml)) {
 				log.error("FML contains illegal character: " + currentCharFromFml);
