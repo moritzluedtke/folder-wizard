@@ -1,18 +1,21 @@
-package de.moritzluedtke.service;
+package de.moritzluedtke.filewizard.service;
 
-import de.moritzluedtke.service.model.CustomTreeItem;
-import de.moritzluedtke.service.model.FolderTreeItem;
+import de.moritzluedtke.filewizard.service.model.CustomTreeItem;
+import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
 
 import java.io.File;
 
 /**
  * Multi purpose class. Validates files or directories, converts folder trees from one class to
- * another and getss the directory from a path to a file.
+ * another and gets the directory from a path to a file.
  */
 public class Utils {
 	
 	private static Utils instance = new Utils();
 	
+	/**
+	 * Uses the singleton pattern as there is no need for more than one Utils class at any given time during runtime.
+	 */
 	private Utils() {
 	
 	}

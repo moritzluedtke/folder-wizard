@@ -1,15 +1,15 @@
-package de.moritzluedtke.gui;
+package de.moritzluedtke.filewizard.gui;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeView;
-import de.moritzluedtke.service.FmlParser;
-import de.moritzluedtke.service.FolderWriter;
-import de.moritzluedtke.service.Utils;
-import de.moritzluedtke.service.exception.FMLSyntaxException;
-import de.moritzluedtke.service.model.CustomTreeItem;
-import de.moritzluedtke.service.model.FolderTreeItem;
+import de.moritzluedtke.filewizard.service.FmlParser;
+import de.moritzluedtke.filewizard.service.FolderWriter;
+import de.moritzluedtke.filewizard.service.Utils;
+import de.moritzluedtke.filewizard.service.exception.FMLSyntaxException;
+import de.moritzluedtke.filewizard.service.model.CustomTreeItem;
+import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
@@ -84,12 +84,12 @@ public class MainWindowController {
 			"Check if it contains:\n" +
 			"- Any keyword (+). If there is no keyword at the start of a line,\n" +
 			"this program can't create a folder structure\n";
-	public static final String ERROR_DIALOG_TITLE = "ERROR";
-	public static final String ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE
+	private static final String ERROR_DIALOG_TITLE = "ERROR";
+	private static final String ERROR_MESSAGE_CANT_CREATE_FOLDER_STRUCTURE
 			= "Can not create folder structure.\n\n" +
 			"Please check that there is no folder in the specified directory\n" +
 			"that is also in the FML file.";
-	public static final String IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE
+	private static final String IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE
 			= "There was a problem with loading the FML file!";
 	
 	private enum Animate {

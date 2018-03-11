@@ -1,4 +1,4 @@
-package de.moritzluedtke.service;
+package de.moritzluedtke.filewizard.service;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,19 +8,20 @@ import java.util.List;
 
 /**
  * Class which checks that there is no syntax error in a given FML file.<p>
- * Uses the singelton pattern as there is no need for more than one FolderWriter at any given time during runtime.
+ * Uses the singleton pattern as there is no need for more than one FolderWriter class at any given time during runtime.
  */
 public class FmlSyntaxChecker {
 	
 	private static final Logger log = LogManager.getLogger();
 	private static FmlSyntaxChecker instance = new FmlSyntaxChecker();
 	
-	public static final String FML_KEYWORD = "+";
+	private static final String FML_KEYWORD = "+";
 	private List<Character> validSpecialCharacters = new ArrayList<>();
 	
-	
+	/**
+	 * Loads all valid Special Characters into the corresponding ArrayList.
+	 */
 	private FmlSyntaxChecker() {
-		// Loads all valid Special Characters into the corresponding ArrayList
 		validSpecialCharacters.add('_');
 		validSpecialCharacters.add('-');
 		validSpecialCharacters.add(' ');
@@ -45,7 +46,7 @@ public class FmlSyntaxChecker {
 	public boolean isFmlSyntaxValid(List<String> fmlAsList) {
 		String fmlAsString = buildStringFromList(fmlAsList);
 		
-		return checkForLegalChars(fmlAsString)
+		return checksIfAllCharsAreLegal(fmlAsString)
 				&& checkForNoDuplicateNames(fmlAsList)
 				&& checkForNoKeywordInFolderName(fmlAsList)
 				&& checkForNoForwardJump(fmlAsList);
@@ -55,9 +56,9 @@ public class FmlSyntaxChecker {
 	 * Iterates through every character in the FML and checks if it is a valid character.
 	 *
 	 * @param fml the whole fml in one String
-	 * @return
+	 * @return false if an illegal character was found
 	 */
-	private boolean checkForLegalChars(String fml) {
+	private boolean checksIfAllCharsAreLegal(String fml) {
 		for (Character currentCharFromFml : fml.toCharArray()) {
 			if (!validSpecialCharacters.contains(currentCharFromFml)
 					&& !Character.isLetter(currentCharFromFml)
@@ -94,7 +95,7 @@ public class FmlSyntaxChecker {
 					log.error("Found duplicate folder names in the same tree level");
 					return false;
 					
-					// If the next level is higher in the tree (lower number), then the lopp will break. After this
+					// If the next level is higher in the tree (lower number), then the loop will break. After this
 					// there can be the same folder name because it will have a different parent than the current one.
 				} else if (nextLevel < currentLevel) {
 					break;
@@ -125,7 +126,7 @@ public class FmlSyntaxChecker {
 	}
 	
 	/**
-	 * Checks if there is any forword jump (e.g. jumping from tree level 2 to 4) in the FML.
+	 * Checks if there is any forward jump (e.g. jumping from tree level 2 to 4) in the FML.
 	 *
 	 * @param fmlAsList the FML in form of a list
 	 * @return true if no forward jump was found

@@ -1,6 +1,6 @@
-package de.moritzluedtke.service;
+package de.moritzluedtke.filewizard.service;
 
-import de.moritzluedtke.service.model.FolderTreeItem;
+import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -8,7 +8,7 @@ import java.io.File;
 
 /**
  * Class which writes a folder structure to a hard drive. <p>
- * Uses the singelton pattern as there is no need for more than one FolderWriter at any given time during runtime.
+ * Uses the singleton pattern as there is no need for more than one FolderWriter class at any given time during runtime.
  */
 public class FolderWriter {
 	

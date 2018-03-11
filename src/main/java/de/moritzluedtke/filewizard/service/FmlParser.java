@@ -1,7 +1,7 @@
-package de.moritzluedtke.service;
+package de.moritzluedtke.filewizard.service;
 
-import de.moritzluedtke.service.exception.FMLSyntaxException;
-import de.moritzluedtke.service.model.FolderTreeItem;
+import de.moritzluedtke.filewizard.service.exception.FMLSyntaxException;
+import de.moritzluedtke.filewizard.service.model.FolderTreeItem;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * Parser which creates a folder structure out of an FML file. <p>
- * The singelton pattern is used as there only needs to be one parser at any given time during runtime.
+ * The singleton pattern is used as there only needs to be one FMLParser class at any given time during runtime.
  */
 public class FmlParser {
 	

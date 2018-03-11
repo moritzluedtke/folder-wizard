@@ -1,4 +1,4 @@
-package de.moritzluedtke;
+package de.moritzluedtke.filewizard;
 
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -24,7 +24,7 @@ public class Starter extends Application {
 	private static final String PATH_TO_WINDOW_ICON = "gui/icon/window/ic_window_v7.png";
 	
 	private static final Logger log = LogManager.getLogger();
-	public static final String GUI_MAIN_LAYOUT_URL = "gui/layout/MainWindow.fxml";
+	private static final String GUI_MAIN_LAYOUT_URL = "gui/layout/MainWindow.fxml";
 	
 	/**
 	 * Main method used to start the GUI.

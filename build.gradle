@@ -14,7 +14,7 @@ task fatJar(type: Jar) {
                 'Implementation-Version': version,
                 'Main-Class': 'de.moritzluedtke.Starter'
     }
-    baseName = project.name // + '-ANOTHER STRING'
+    baseName = project.name
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     with jar
 }

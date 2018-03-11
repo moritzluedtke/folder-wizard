@@ -1,4 +1,4 @@
-package de.moritzluedtke.service.model;
+package de.moritzluedtke.filewizard.service.model;
 
 import javafx.scene.control.TreeItem;
 

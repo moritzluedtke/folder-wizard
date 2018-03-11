@@ -1,4 +1,4 @@
-package de.moritzluedtke.service.model;
+package de.moritzluedtke.filewizard.service.model;
 
 import java.util.ArrayList;
 
@@ -59,7 +59,7 @@ public class FolderTreeItem {
 	 */
 	private void createChildrenListIfChildrenNull() {
 		if (this.children == null) {
-			this.children = new ArrayList<FolderTreeItem>();
+			this.children = new ArrayList<>();
 		}
 	}
 }
