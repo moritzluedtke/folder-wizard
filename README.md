@@ -5,6 +5,8 @@ Folder Wizard benötigt Java 1.8u60 oder neuer.
 Das Programm benötigt eine FML Datei, um daraus die Ordner Struktur zu erzeugen.
 Diese Datei muss mit `*.fml` enden. Eine Beispiel-Datei liegt diesem ZIP-Archiv bei.
 
+Wenn man den Header oder das "created by" Label anklickt, wird ein kleiner "About" Dialog angezeigt.
+
 ####FML Regeln
 - Das "Keyword", damit Folder Wizard erkennt, dass die Zeile ein Ordner werden soll, ist das `+`.
 - Jede Zeile, die nicht mit einem oder mehreren `+` anfängt, ist ein Kommentar.
