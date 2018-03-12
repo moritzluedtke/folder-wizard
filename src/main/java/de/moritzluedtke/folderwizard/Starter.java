@@ -76,7 +76,7 @@ public class Starter extends Application {
 	 * @param resourceURL	takes the path to the FXML file
 	 * @return				the created primary stage
 	 */
-	private Stage createMainWindowGUI(Stage primaryStage, URL resourceURL) {
+	private Stage createMainWindowGUI(Stage primaryStage, URL resourceURL)  {
 		try {
 			Parent root = FXMLLoader.load(resourceURL);
 			primaryStage.setTitle("Folder Wizard - by Moritz Lüdtke");

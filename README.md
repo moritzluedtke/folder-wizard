@@ -1,5 +1,7 @@
 #Folder Wizard
 ##Bedienungshinweise
+Folder Wizard benötigt Java 1.8u60 oder neuer.
+
 Das Programm benötigt eine FML Datei, um daraus die Ordner Struktur zu erzeugen.
 Diese Datei muss mit `*.fml` enden. Eine Beispiel-Datei liegt diesem ZIP-Archiv bei.
 
