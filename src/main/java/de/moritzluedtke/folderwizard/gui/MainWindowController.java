@@ -1,20 +1,20 @@
 package de.moritzluedtke.folderwizard.gui;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeView;
+import com.jfoenix.controls.*;
 import de.moritzluedtke.folderwizard.service.FmlParser;
+import de.moritzluedtke.folderwizard.service.FmlPresetProvider;
 import de.moritzluedtke.folderwizard.service.FolderWriter;
 import de.moritzluedtke.folderwizard.service.Utils;
 import de.moritzluedtke.folderwizard.service.exception.FMLSyntaxException;
 import de.moritzluedtke.folderwizard.service.model.CustomTreeItem;
+import de.moritzluedtke.folderwizard.service.model.FmlPreset;
 import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class MainWindowController {
@@ -48,7 +49,7 @@ public class MainWindowController {
 	private static final String DIRECTORY_CHOOSER_WINDOW_TITLE = "Choose a root directory:";
 	private static final String FILE_CHOOSER_WINDOW_TITLE = "Choose a FML file:";
 	
-	private static final String DEFAULT_DIRECTORY_FOR_DIR_CHOOSER = System.getProperty("user.dir");
+	private static final String INSTALLATION_DIR = System.getProperty("user.dir");
 	private static final double LARGE_ANIMATION_DURATION_IN_MS = 400;
 	private static final double VERY_LARGE_ANIMATION_DURATION_IN_MS = 2000;
 	private static final int DETAIL_AREA_ANIMATION_PANE_TRAVEL_DISTANCE_Y_AXIS = 560;
@@ -115,6 +116,7 @@ public class MainWindowController {
 	private FmlParser fmlParser = FmlParser.getInstance();
 	private FolderWriter folderWriter = FolderWriter.getInstance();
 	private Utils utils = Utils.getInstance();
+	private FmlPresetProvider fmlPresetProvider = FmlPresetProvider.getInstance();
 	
 	@FXML
 	private StackPane rootStackPane;
@@ -146,10 +148,13 @@ public class MainWindowController {
 	private JFXTextField textFieldDetailAreaRootPath;
 	@FXML
 	private JFXTreeView treeViewDetailArea;
+	@FXML
+	private JFXPopup popup;
 	
 	
 	public void initialize() {
 		addTextFieldChangeListeners();
+//		initPopUp();
 	}
 	
 	@FXML
@@ -167,7 +172,7 @@ public class MainWindowController {
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked() {
 		if (selectedRootPath.isEmpty()) {
-			File selectedDirectory = getDirectoryFromDirChooser(DEFAULT_DIRECTORY_FOR_DIR_CHOOSER);
+			File selectedDirectory = getDirectoryFromDirChooser(INSTALLATION_DIR);
 			
 			putSelectedRootPathIntoTextField(selectedDirectory);
 		} else {
@@ -180,7 +185,7 @@ public class MainWindowController {
 	@FXML
 	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		if (selectedFmlPath.isEmpty()) {
-			File selectedFmlFile = getFileFromFileChooser(DEFAULT_DIRECTORY_FOR_DIR_CHOOSER);
+			File selectedFmlFile = getFileFromFileChooser(INSTALLATION_DIR);
 			
 			putSelectedFmlPathIntoTextField(selectedFmlFile);
 		} else {
@@ -188,6 +193,16 @@ public class MainWindowController {
 			
 			putSelectedFmlPathIntoTextField(selectedFmlFile);
 		}
+	}
+	
+	@FXML
+	public void handleDetailAreaButtonChoosePresetClicked(MouseEvent mouseEvent) {
+		List<FmlPreset> presetList = fmlPresetProvider.readAllPresetsFromDisk(INSTALLATION_DIR);
+		
+		log.info(presetList);
+//		popup = new JFXPopup();
+// TODO: When the popup gets clicked, the choosen preset path will be put into the path selection window
+	
 	}
 	
 	@FXML
@@ -213,6 +228,11 @@ public class MainWindowController {
 	public void handleHeaderMainMenuClick() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
+	
+//	private void initPopUp() {
+//		popup.setPopupContent();
+//		popup.set
+//	}
 	
 	private void putSelectedFmlPathIntoTextField(File file) {
 		if (file != null && !file.getPath().isEmpty()) {

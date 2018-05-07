@@ -130,17 +130,26 @@
 				</HBox>
 				
 				<!--FML path selection-->
-				<HBox alignment="CENTER" spacing="10">
+				<HBox alignment="CENTER" spacing="5">
 					<VBox spacing="5">
 						<Label text="Specify FML path:"
 							   styleClass="detail-area-title"/>
 						<JFXTextField fx:id="textFieldDetailAreaFmlFilePath"
 									  styleClass="text-field-detail-area"
-									  prefWidth="450"/>
+									  prefWidth="390"/>
 						<Label fx:id="labelDetailAreaFmlFilePathMessage"
 							   styleClass="detail-area-label"
 							   opacity="0"/>
 					</VBox>
+					
+					<JFXButton onMouseClicked="#handleDetailAreaButtonChoosePresetClicked"
+							   ripplerFill="#bcbcbc" focusTraversable="false">
+						<graphic>
+							<ImageView fitWidth="40" fitHeight="40">
+								<Image url="/gui/icon/black/ic_b_list.png"/>
+							</ImageView>
+						</graphic>
+					</JFXButton>
 					
 					<JFXButton onAction="#handleDetailAreaButtonOpenFmlFileClicked"
 							   ripplerFill="#bcbcbc" focusTraversable="false">
