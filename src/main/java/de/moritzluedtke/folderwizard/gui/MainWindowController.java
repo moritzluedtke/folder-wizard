@@ -28,10 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
-/**
- * Controller class which is connected to the GUI (FXML file).
- * Controls everything which is related to the GUI.
- */
+
 @SuppressWarnings("Duplicates")
 public class MainWindowController {
 	
@@ -152,40 +149,26 @@ public class MainWindowController {
 	private JFXTreeView treeViewDetailArea;
 	
 	
-	/**
-	 * Gets called before the GUI window launches. <p>
-	 * Calls the {@link MainWindowController#addTextFieldChangeListeners()} method.
-	 */
+	
 	public void initialize() {
 		addTextFieldChangeListeners();
 	}
 	
-	/**
-	 * Animates the Detail Area in and sets the global variable activeDetailAreaSection according to the pressed button.
-	 * <p/>
-	 * Note: This approach ({@link #activeDetailAreaSection}) is kept for future expandability.
-	 */
+	
 	@FXML
 	public void handleMainAreaButtonCreateByFMLClicked() {
 		activeDetailAreaSection = DetailAreaSection.CREATE_BY_FILE;
 		showDetailArea(Animate.IN);
 	}
 	
-	/**
-	 * Handles the onAction event when the close button in the details area is clicked.
-	 * Animates the detail area out. <p/>
-	 * Note: This approach ({@link #activeDetailAreaSection}) is kept for future expandability.
-	 */
+	
 	@FXML
 	public void handleDetailAreaButtonCloseClicked() {
 		showDetailArea(Animate.OUT);
 		activeDetailAreaSection = DetailAreaSection.NONE;
 	}
 	
-	/**
-	 * Shows a {@link DirectoryChooser} by calling {@link #getDirectoryFromDirChooser(String)}. <p>
-	 * Also calls {@link #putSelectedRootPathIntoTextField(File)} and gives it the selected directory.
-	 */
+	
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked() {
 		if (selectedRootPath.isEmpty()) {
@@ -199,10 +182,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Shows a {@link FileChooser} by calling {@link #getFileFromFileChooser(String)}. <p>
-	 * Also calls {@link #putSelectedFmlPathIntoTextField(File)} and gives it the selected file.
-	 */
+	
 	@FXML
 	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		if (selectedFmlPath.isEmpty()) {
@@ -216,13 +196,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Handles the onAction event which gets activated when the button "execute" in the detail area is clicked.
-	 * Writes the Folder Tree into actual folders on the hard drive
-	 * by calling {@link FolderWriter#writeFoldersToDisk(FolderTreeItem)}.<p/>
-	 * Shows a "Success" label on success and an error dialog in case of an error.<p>
-	 * Calls {@link MainWindowController#clearFMLPath()}.
-	 */
+	
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked() {
 		if (folderWriter.writeFoldersToDisk(rootFolderTreeItem)) {
@@ -237,41 +211,26 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Handles the mouse click event when the "created by" label in the main menu is clicked.
-	 * Shows an about dialog (calls {@link MainWindowController#showDialog(String, String)}).
-	 */
+	
 	@FXML
 	public void handleMainMenuLabelCreatedByClicked() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
-	/**
-	 * Handles the mouse click event when the header in the main menu is clicked.
-	 * Shows an about dialog (calls {@link MainWindowController#showDialog(String, String)}).
-	 */
+	
 	@FXML
 	public void handleHeaderMainMenuClick() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
-	/**
-	 * Sets the text of {@link #textFieldDetailAreaFmlFilePath} after basic validation of the input.
-	 *
-	 * @param file the selected fml file from the file chooser
-	 */
+	
 	private void putSelectedFmlPathIntoTextField(File file) {
 		if (file != null && !file.getPath().isEmpty()) {
 			textFieldDetailAreaFmlFilePath.setText(file.getPath());
 		}
 	}
 	
-	/**
-	 * Creates and shows a file chooser and returns the selected {@link File}.
-	 *
-	 * @param initialDirectory the default directory the file chooser shows
-	 * @return the selected file from the file chooser
-	 */
+	
 	private File getFileFromFileChooser(String initialDirectory) {
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle(FILE_CHOOSER_WINDOW_TITLE);
@@ -282,11 +241,7 @@ public class MainWindowController {
 		return fileChooser.showOpenDialog(mainWindow);
 	}
 	
-	/**
-	 * Sets the text of {@link #textFieldDetailAreaRootPath} after basic validation of the input.
-	 *
-	 * @param dir the selected dir from the dir chooser
-	 */
+	
 	private void putSelectedRootPathIntoTextField(File dir) {
 		if (dir != null) {
 			if (utils.isUserInputADirectory(dir.getPath())) {
@@ -295,12 +250,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Creates and shows a directory chooser and returns the selected {@link File}.
-	 *
-	 * @param initialDirectory the default directory the directory chooser shows
-	 * @return the selected directory from the directory chooser
-	 */
+	
 	private File getDirectoryFromDirChooser(String initialDirectory) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
 		dirChooser.setTitle(DIRECTORY_CHOOSER_WINDOW_TITLE);
@@ -311,16 +261,7 @@ public class MainWindowController {
 		return dirChooser.showDialog(mainWindow);
 	}
 	
-	/**
-	 * Adds two text field change listeners. These listenes get activated when the values they are listening to
-	 * (text value) get changed.
-	 * <p/>
-	 * Both Listeners = Whenever the text inside the text field
-	 * changes the new value will be check if it's valid.
-	 * If it is valid a preview of the folder structure from the FML file will be generated
-	 * by calling {@link #makeFolderStructureFromFML()}. <p>
-	 * Also the message underneath the text field will be updated.
-	 */
+	
 	private void addTextFieldChangeListeners() {
 		textFieldDetailAreaRootPath.textProperty().addListener(
 				(observable, oldValue, newValue) -> {
@@ -367,12 +308,7 @@ public class MainWindowController {
 				});
 	}
 	
-	/**
-	 * Calls {@link FmlParser} and gives him {@link #selectedFmlPath} + {@link #selectedRootPath}. <p>
-	 * When no exception occur during the validation of the FML, the execute button gets activated
-	 * and the folder preview will be made by calling {@link #makeFolderTreePreviewVisible()}. <p>
-	 * If an exception occurs, it will be catched and an error dialog will be shown.
-	 */
+	
 	private void makeFolderStructureFromFML() {
 		try {
 			rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
@@ -393,9 +329,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Converts the whole folder tree from {@link FolderTreeItem} into {@link CustomTreeItem} and makes the preview.
-	 */
+	
 	private void makeFolderTreePreviewVisible() {
 		if (rootFolderTreeItem != null) {
 			CustomTreeItem<String> root = new CustomTreeItem<>(rootFolderTreeItem.getName() + " (root)");
@@ -408,10 +342,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Clears {@link #textFieldDetailAreaFmlFilePath}, {@link #labelDetailAreaFmlFilePathMessage},
-	 * {@link #selectedFmlPath} and also calls {@link #emptyFolderPreview()}.
-	 */
+	
 	private void clearFMLPath() {
 		textFieldDetailAreaFmlFilePath.setText("");
 		labelDetailAreaFmlFilePathMessage.setOpacity(0);
@@ -420,20 +351,12 @@ public class MainWindowController {
 		emptyFolderPreview();
 	}
 	
-	/**
-	 * Sets the root tree element in {@link #treeViewDetailArea} to null, effectivly clearing the preview.
-	 */
+	
 	private void emptyFolderPreview() {
 		treeViewDetailArea.setRoot(null);
 	}
 	
-	/**
-	 * Sets the text of the label in the detail area for the root path message and changes the color according to
-	 * the MessageType. Also sets the opcatiy to 1 (full opacity).
-	 *
-	 * @param text        the text of the label
-	 * @param messageType SUCCESS = text color green | ERROR = text color red
-	 */
+	
 	private void activateLabel(Label label, String text, MessageType messageType) {
 		label.setOpacity(1);
 		label.setText(text);
@@ -448,17 +371,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Creates a dialog and show is on the screen.
-	 * Uses the layout specified in the FXML file.
-	 * Goes on top of the content defined in the root StackPane.
-	 * <p>
-	 * Sets the opacity of the dialog content to 1 (full opacity). The Content needs to remain hidden before the dialog
-	 * appears. Otherwise it would be visible in the layout.
-	 *
-	 * @param message the message for the dialog body
-	 * @param title   the title for the header of the dialog
-	 */
+	
 	private void showDialog(String message, String title) {
 		JFXDialog dialog = new JFXDialog();
 		
@@ -472,14 +385,7 @@ public class MainWindowController {
 		dialog.show();
 	}
 	
-	/**
-	 * Customizes the detail area and then animates it into the scene.
-	 * <p>
-	 * Also hides the main title.
-	 *
-	 * @param animationDirection Animate.IN = Animating nodes into the scene |
-	 *                           Animate.OUT = Animating nodes out of the scene
-	 */
+	
 	private void showDetailArea(Animate animationDirection) {
 		if (animationDirection == Animate.IN) {
 			customizeDetailAreaForSection(activeDetailAreaSection);
@@ -492,13 +398,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Customizes the detail area (e.g. the title) to fit the desired section.
-	 * <p/>
-	 * Note: This approach ({@link #activeDetailAreaSection}) is kept for future expandability.
-	 *
-	 * @param section = the section to which the detail area should be customized (e.g. Create by File)
-	 */
+	
 	private void customizeDetailAreaForSection(DetailAreaSection section) {
 		switch (section) {
 			case CREATE_BY_FILE:
@@ -508,12 +408,7 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Animates the detail area in/out by bringing it up from the bottom or animating it down.
-	 *
-	 * @param animationDirection Animate.IN = Animating nodes into the scene;
-	 *                           Animate.OUT = Animating nodes out of the scene
-	 */
+	
 	private void animateDetailArea(Animate animationDirection) {
 		TranslateTransition translateTransition
 				= new TranslateTransition(Duration.millis(LARGE_ANIMATION_DURATION_IN_MS), paneDetailArea);
@@ -533,23 +428,13 @@ public class MainWindowController {
 		}
 	}
 	
-	/**
-	 * Fades in/out the whole header (incl. the subtitle).
-	 *
-	 * @param fade Fade.IN = Animating opacity from 0 - 1; Fade.OUT = Animating opacity from 1 - 0
-	 */
+	
 	private void fadeMainAreaHeader(Fade fade) {
 		fadeGUIComponent(fade, labelMainAreaHeaderTitle, LARGE_ANIMATION_DURATION_IN_MS);
 		fadeGUIComponent(fade, labelMainAreaHeaderSubtitle, LARGE_ANIMATION_DURATION_IN_MS);
 	}
 	
-	/**
-	 * Fades in/out the component
-	 *
-	 * @param fadeDirection the direction of the fade
-	 * @param component     the component which should be faded in/out
-	 * @param duration      the time the fade should take
-	 */
+	
 	private void fadeGUIComponent(Fade fadeDirection, Node component, double duration) {
 		FadeTransition fadeTransitionComponent = new FadeTransition(Duration.millis(duration), component);
 		

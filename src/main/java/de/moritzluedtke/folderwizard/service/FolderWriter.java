@@ -6,10 +6,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-/**
- * Class which writes a folder structure to a hard drive. <p>
- * Uses the singleton pattern as there is no need for more than one FolderWriter class at any given time during runtime.
- */
+
 public class FolderWriter {
 	
 	private static final Logger log = LogManager.getLogger();
@@ -19,21 +16,12 @@ public class FolderWriter {
 	
 	}
 	
-	/**
-	 * Returns the only/one existing object.
-	 *
-	 * @return the singelton object
-	 */
+	
 	public static FolderWriter getInstance() {
 		return instance;
 	}
 	
-	/**
-	 * Writes the {@link FolderTreeItem} to disk including all of its children.
-	 *
-	 * @param rootItem current root folder item
-	 * @return true if no error occured
-	 */
+	
 	public boolean writeFoldersToDisk(FolderTreeItem rootItem) {
 		for (FolderTreeItem folderItem : rootItem.getChildren()) {
 			File folder = new File(folderItem.getPath());

@@ -6,10 +6,6 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Class which checks that there is no syntax error in a given FML file.<p>
- * Uses the singleton pattern as there is no need for more than one FolderWriter class at any given time during runtime.
- */
 public class FmlSyntaxChecker {
 	
 	private static final Logger log = LogManager.getLogger();
@@ -18,9 +14,6 @@ public class FmlSyntaxChecker {
 	private static final String FML_KEYWORD = "+";
 	private List<Character> legalSpecialCharacters = new ArrayList<>();
 	
-	/**
-	 * Loads all valid Special Characters into the corresponding ArrayList.
-	 */
 	private FmlSyntaxChecker() {
 		legalSpecialCharacters.add('_');
 		legalSpecialCharacters.add('-');
@@ -28,21 +21,10 @@ public class FmlSyntaxChecker {
 		legalSpecialCharacters.add('+');
 	}
 	
-	/**
-	 * Returns the only/one existing object.
-	 *
-	 * @return the singelton object
-	 */
 	public static FmlSyntaxChecker getInstance() {
 		return instance;
 	}
 	
-	/**
-	 * Checks the FML for syntax errors.
-	 *
-	 * @param fmlAsList the FML in List form
-	 * @return true if the FML has no syntax errors in it
-	 */
 	public boolean isFmlSyntaxValid(List<String> fmlAsList) {
 		String fmlAsString = buildStringFromList(fmlAsList);
 		
@@ -52,12 +34,6 @@ public class FmlSyntaxChecker {
 				&& checkForNoForwardJump(fmlAsList);
 	}
 	
-	/**
-	 * Iterates through every character in the FML and checks if it is a valid character.
-	 *
-	 * @param fml the whole fml in one String
-	 * @return false if an illegal character was found
-	 */
 	private boolean checksIfAllCharsAreLegal(String fml) {
 		for (Character currentCharFromFml : fml.toCharArray()) {
 			if (!legalSpecialCharacters.contains(currentCharFromFml)
@@ -71,12 +47,6 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	/**
-	 * Checks that for every folder name there is no duplicate name in the same scope/tree level.
-	 *
-	 * @param fmlAsList the FML in form of a list
-	 * @return true if the FML is free of duplicate names in the same scope
-	 */
 	private boolean checkForNoDuplicateNames(List<String> fmlAsList) {
 		// There can be duplicate folder names if they are not in the same scope/level under one folder.
 		
@@ -106,12 +76,6 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	/**
-	 * Checks if the keyword is in any folder name.
-	 *
-	 * @param fmlAsList the FML in form of a list
-	 * @return true if every folder name is free of keywords
-	 */
 	private boolean checkForNoKeywordInFolderName(List<String> fmlAsList) {
 		for (String line : fmlAsList) {
 			int lastIndexOfKeyword = getIndexOfLastKeyword(line);
@@ -125,12 +89,6 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	/**
-	 * Checks if there is any forward jump (e.g. jumping from tree level 2 to 4) in the FML.
-	 *
-	 * @param fmlAsList the FML in form of a list
-	 * @return true if no forward jump was found
-	 */
 	private boolean checkForNoForwardJump(List<String> fmlAsList) {
 		int numberOfKeywords;
 		int oldNumberOfKeywords = 0;
@@ -149,22 +107,10 @@ public class FmlSyntaxChecker {
 		return true;
 	}
 	
-	/**
-	 * Gets the tree level/scope from one FML line.
-	 *
-	 * @param fmlLine one FML line with keywords
-	 * @return tree level from that line
-	 */
 	private int getTreeLevelFromFmlLine(String fmlLine) {
 		return getIndexOfLastKeyword(fmlLine) + 1;
 	}
 	
-	/**
-	 * Gets the index of the last keyword in a given line.
-	 *
-	 * @param fmlLine one FML line
-	 * @return index of the last keyword
-	 */
 	private int getIndexOfLastKeyword(String fmlLine) {
 		int index;
 		
@@ -180,12 +126,6 @@ public class FmlSyntaxChecker {
 		return index;
 	}
 	
-	/**
-	 * Builds one string out of a List of Strings.
-	 *
-	 * @param list list of strings
-	 * @return concatenated string
-	 */
 	private String buildStringFromList(List<String> list) {
 		StringBuilder sb = new StringBuilder();
 		
