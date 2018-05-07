@@ -29,7 +29,6 @@ public class Starter extends Application {
 		launch(args);
 	}
 	
-	
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		URL mainWindowUrl = ClassLoader.getSystemResource(GUI_MAIN_LAYOUT_URL);
@@ -43,13 +42,11 @@ public class Starter extends Application {
 		}
 	}
 	
-	
 	@Override
 	public void stop() throws Exception {
 		Platform.exit();
 		System.exit(0);
 	}
-	
 	
 	private Stage createMainWindowGUI(Stage primaryStage, URL resourceURL)  {
 		try {
@@ -68,16 +65,13 @@ public class Starter extends Application {
 		return primaryStage;
 	}
 	
-	
 	private void setWindowIcon(Stage primaryStage) {
 		primaryStage.getIcons().add(new Image(PATH_TO_WINDOW_ICON));
 	}
 	
-	
 	private void enableFontSmoothing() {
 		System.setProperty("prism.lcdtext", "false");
 	}
-	
 	
 	private void centerStage(Stage stage, int windowWidth, int windowHeight) {
 		Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();

@@ -6,7 +6,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 
-
 public class FolderWriter {
 	
 	private static final Logger log = LogManager.getLogger();
@@ -16,11 +15,9 @@ public class FolderWriter {
 	
 	}
 	
-	
 	public static FolderWriter getInstance() {
 		return instance;
 	}
-	
 	
 	public boolean writeFoldersToDisk(FolderTreeItem rootItem) {
 		for (FolderTreeItem folderItem : rootItem.getChildren()) {
@@ -30,13 +27,11 @@ public class FolderWriter {
 				log.error("Folder \"" + folder.getName() + "\" already exists.");
 				return false;
 			} else {
-				// Writes the folder to disk an uses the return value to determine if the creation was successful
 				if (!folder.mkdir()) {
 					log.error("Can not create folder: " + folderItem.getName() + "@ " + folderItem.getPath());
 					return false;
 				}
 				
-				// Calls itself if the folder has children, but with the newly created folder as the new root.
 				if (folderItem.hasChildren()) {
 					writeFoldersToDisk(folderItem);
 				}

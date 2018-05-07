@@ -20,11 +20,9 @@ public class FmlParser {
 	
 	}
 	
-	
 	public static FmlParser getInstance() {
 		return instance;
 	}
-	
 	
 	public FolderTreeItem parseFml(String fmlPath, String rootPath)
 			throws FMLSyntaxException, IOException {
@@ -33,7 +31,6 @@ public class FmlParser {
 		
 		return extractFolderStructureFromFMLList(fml, rootPath);
 	}
-	
 	
 	private List<String> extractFmlFromFile(String fmlPath) throws IOException, FMLSyntaxException {
 		List<String> fml = Files.readAllLines(Paths.get(fmlPath));
@@ -45,7 +42,6 @@ public class FmlParser {
 			throw new FMLSyntaxException();
 		}
 	}
-	
 	
 	private FolderTreeItem extractFolderStructureFromFMLList(List<String> filteredFml, String rootPath) {
 		FolderTreeItem root = new FolderTreeItem(getFolderNameFromPath(rootPath), rootPath, null);
@@ -81,7 +77,6 @@ public class FmlParser {
 		return root;
 	}
 	
-	
 	private FolderTreeItem getParentFromNLevelsAbove(FolderTreeItem folder, int numberOfTreeLevelsToMoveUpTheTree) {
 		int i = 0;
 		
@@ -94,7 +89,6 @@ public class FmlParser {
 		return folder;
 	}
 	
-	
 	private int getLevelFromKeyword(String fmlLine) {
 		int indexOfLastKeyword = fmlLine.lastIndexOf(FML_KEYWORD.toString()) + 1;
 		String keyword = fmlLine.substring(0, indexOfLastKeyword);
@@ -102,11 +96,9 @@ public class FmlParser {
 		return keyword.length();
 	}
 	
-	
 	private String getFolderNameFromFmlLine(String line) {
 		return line.substring(line.lastIndexOf("+") + 1, line.length());
 	}
-	
 	
 	private String getFolderNameFromPath(String path) {
 		return path.substring(path.lastIndexOf("\\") + 1, path.length());

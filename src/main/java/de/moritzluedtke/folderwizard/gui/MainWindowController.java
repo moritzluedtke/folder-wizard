@@ -28,7 +28,6 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 
-
 @SuppressWarnings("Duplicates")
 public class MainWindowController {
 	
@@ -149,11 +148,9 @@ public class MainWindowController {
 	private JFXTreeView treeViewDetailArea;
 	
 	
-	
 	public void initialize() {
 		addTextFieldChangeListeners();
 	}
-	
 	
 	@FXML
 	public void handleMainAreaButtonCreateByFMLClicked() {
@@ -161,13 +158,11 @@ public class MainWindowController {
 		showDetailArea(Animate.IN);
 	}
 	
-	
 	@FXML
 	public void handleDetailAreaButtonCloseClicked() {
 		showDetailArea(Animate.OUT);
 		activeDetailAreaSection = DetailAreaSection.NONE;
 	}
-	
 	
 	@FXML
 	public void handleDetailAreaButtonOpenRootFolderClicked() {
@@ -182,7 +177,6 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	@FXML
 	public void handleDetailAreaButtonOpenFmlFileClicked() {
 		if (selectedFmlPath.isEmpty()) {
@@ -195,7 +189,6 @@ public class MainWindowController {
 			putSelectedFmlPathIntoTextField(selectedFmlFile);
 		}
 	}
-	
 	
 	@FXML
 	public void handleDetailAreaButtonExecuteClicked() {
@@ -211,25 +204,21 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	@FXML
 	public void handleMainMenuLabelCreatedByClicked() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
-	
 	
 	@FXML
 	public void handleHeaderMainMenuClick() {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
-	
 	private void putSelectedFmlPathIntoTextField(File file) {
 		if (file != null && !file.getPath().isEmpty()) {
 			textFieldDetailAreaFmlFilePath.setText(file.getPath());
 		}
 	}
-	
 	
 	private File getFileFromFileChooser(String initialDirectory) {
 		FileChooser fileChooser = new FileChooser();
@@ -241,7 +230,6 @@ public class MainWindowController {
 		return fileChooser.showOpenDialog(mainWindow);
 	}
 	
-	
 	private void putSelectedRootPathIntoTextField(File dir) {
 		if (dir != null) {
 			if (utils.isUserInputADirectory(dir.getPath())) {
@@ -249,7 +237,6 @@ public class MainWindowController {
 			}
 		}
 	}
-	
 	
 	private File getDirectoryFromDirChooser(String initialDirectory) {
 		DirectoryChooser dirChooser = new DirectoryChooser();
@@ -260,7 +247,6 @@ public class MainWindowController {
 		
 		return dirChooser.showDialog(mainWindow);
 	}
-	
 	
 	private void addTextFieldChangeListeners() {
 		textFieldDetailAreaRootPath.textProperty().addListener(
@@ -308,7 +294,6 @@ public class MainWindowController {
 				});
 	}
 	
-	
 	private void makeFolderStructureFromFML() {
 		try {
 			rootFolderTreeItem = fmlParser.parseFml(selectedFmlPath,
@@ -329,7 +314,6 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	private void makeFolderTreePreviewVisible() {
 		if (rootFolderTreeItem != null) {
 			CustomTreeItem<String> root = new CustomTreeItem<>(rootFolderTreeItem.getName() + " (root)");
@@ -342,7 +326,6 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	private void clearFMLPath() {
 		textFieldDetailAreaFmlFilePath.setText("");
 		labelDetailAreaFmlFilePathMessage.setOpacity(0);
@@ -351,11 +334,9 @@ public class MainWindowController {
 		emptyFolderPreview();
 	}
 	
-	
 	private void emptyFolderPreview() {
 		treeViewDetailArea.setRoot(null);
 	}
-	
 	
 	private void activateLabel(Label label, String text, MessageType messageType) {
 		label.setOpacity(1);
@@ -371,7 +352,6 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	private void showDialog(String message, String title) {
 		JFXDialog dialog = new JFXDialog();
 		
@@ -385,7 +365,6 @@ public class MainWindowController {
 		dialog.show();
 	}
 	
-	
 	private void showDetailArea(Animate animationDirection) {
 		if (animationDirection == Animate.IN) {
 			customizeDetailAreaForSection(activeDetailAreaSection);
@@ -398,7 +377,6 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	private void customizeDetailAreaForSection(DetailAreaSection section) {
 		switch (section) {
 			case CREATE_BY_FILE:
@@ -407,7 +385,6 @@ public class MainWindowController {
 				break;
 		}
 	}
-	
 	
 	private void animateDetailArea(Animate animationDirection) {
 		TranslateTransition translateTransition
@@ -428,12 +405,10 @@ public class MainWindowController {
 		}
 	}
 	
-	
 	private void fadeMainAreaHeader(Fade fade) {
 		fadeGUIComponent(fade, labelMainAreaHeaderTitle, LARGE_ANIMATION_DURATION_IN_MS);
 		fadeGUIComponent(fade, labelMainAreaHeaderSubtitle, LARGE_ANIMATION_DURATION_IN_MS);
 	}
-	
 	
 	private void fadeGUIComponent(Fade fadeDirection, Node component, double duration) {
 		FadeTransition fadeTransitionComponent = new FadeTransition(Duration.millis(duration), component);
