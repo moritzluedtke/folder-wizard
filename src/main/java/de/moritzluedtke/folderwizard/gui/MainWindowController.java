@@ -149,12 +149,15 @@ public class MainWindowController {
 	@FXML
 	private JFXTreeView treeViewDetailArea;
 	@FXML
-	private JFXPopup popup;
+	private JFXButton buttonDetailAreaPreset;
+	
+	private JFXPopup presetPopup = new JFXPopup();
+	private JFXListView<FmlPreset> popUpListView = new JFXListView<>();
 	
 	
 	public void initialize() {
 		addTextFieldChangeListeners();
-//		initPopUp();
+		createPresetPopup();
 	}
 	
 	@FXML
@@ -198,11 +201,13 @@ public class MainWindowController {
 	@FXML
 	public void handleDetailAreaButtonChoosePresetClicked(MouseEvent mouseEvent) {
 		List<FmlPreset> presetList = fmlPresetProvider.readAllPresetsFromDisk(INSTALLATION_DIR);
+		updatePresetPopup(presetList);
 		
-		log.info(presetList);
-//		popup = new JFXPopup();
-// TODO: When the popup gets clicked, the choosen preset path will be put into the path selection window
-	
+		presetPopup.show(buttonDetailAreaPreset,
+				JFXPopup.PopupVPosition.TOP,
+				JFXPopup.PopupHPosition.LEFT,
+				mouseEvent.getX(),
+				mouseEvent.getY());
 	}
 	
 	@FXML
@@ -229,10 +234,25 @@ public class MainWindowController {
 		showDialog(ABOUT_DIALOG_CONTENT_TEXT, ABOUT_DIALOG_TITLE);
 	}
 	
-//	private void initPopUp() {
-//		popup.setPopupContent();
-//		popup.set
-//	}
+	private void updatePresetPopup(List<FmlPreset> presetList) {
+		int listViewSize = popUpListView.getItems().size();
+		popUpListView.getItems().remove(0, listViewSize);
+		popUpListView.getItems().addAll(presetList);
+		
+		popUpListView.getSelectionModel().clearSelection();
+	}
+	
+	private void createPresetPopup() {
+		presetPopup.setPopupContent(popUpListView);
+		
+		popUpListView.setOnMouseClicked(event -> {
+			String selectedPresetPath = popUpListView.getSelectionModel().getSelectedItem().getPathToFml();
+			
+			textFieldDetailAreaFmlFilePath.setText(selectedPresetPath);
+			
+			presetPopup.hide();
+		});
+	}
 	
 	private void putSelectedFmlPathIntoTextField(File file) {
 		if (file != null && !file.getPath().isEmpty()) {

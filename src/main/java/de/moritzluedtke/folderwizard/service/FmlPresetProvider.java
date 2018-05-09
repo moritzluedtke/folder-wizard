@@ -12,11 +12,12 @@ import static java.util.Optional.of;
 
 public class FmlPresetProvider {
 	
-	private static final String DOT = ".";
-	private static final String FML_FILE_ENDING = ".fml";
-	
 	private static FmlPresetProvider instance = new FmlPresetProvider();
 	private static final Logger log = LogManager.getLogger();
+	
+	private static final String DOT = ".";
+	private static final String FML_FILE_ENDING = ".fml";
+	private static final String PRESET_FOLDER = "/_presets";
 	
 	private List<FmlPreset> presetList = new ArrayList<>();
 	
@@ -25,10 +26,10 @@ public class FmlPresetProvider {
 	}
 	
 	public List<FmlPreset> readAllPresetsFromDisk(String pathToInstallationFolder) {
-		File installFolder = new File(pathToInstallationFolder);
+		File presetFolder = new File(pathToInstallationFolder + PRESET_FOLDER);
 		
-		if (installFolder.isDirectory()) {
-			Optional<File[]> allFilesList = Optional.ofNullable(installFolder.listFiles());
+		if (presetFolder.isDirectory()) {
+			Optional<File[]> allFilesList = Optional.ofNullable(presetFolder.listFiles());
 			
 			if (allFilesList.isPresent()) {
 				List<FmlPreset> presetList = new ArrayList<>();

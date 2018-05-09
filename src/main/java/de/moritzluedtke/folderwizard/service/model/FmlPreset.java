@@ -7,7 +7,7 @@ public class FmlPreset {
 	
 	@Override
 	public String toString() {
-		return "\"" + name + "\"" + " @ " + pathToFml;
+		return name;
 	}
 	
 	public FmlPreset withName(String name) {

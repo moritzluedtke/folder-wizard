@@ -12,18 +12,19 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-
 public class Starter extends Application {
+	private static final Logger log = LogManager.getLogger();
+	
 	private static final int MAIN_WINDOW_WIDTH = 900;
 	private static final int MAIN_WINDOW_HEIGHT = 570;
-	private static final String PATH_TO_WINDOW_ICON = "gui/icon/window/ic_window_v7.png";
-	
-	private static final Logger log = LogManager.getLogger();
 	private static final String GUI_MAIN_LAYOUT_URL = "gui/layout/MainWindow.fxml";
-	
+	private static final String PATH_TO_WINDOW_ICON = "gui/icon/window/ic_window_v7.png";
+	private static final String PATH_TO_CURRENT_DIRECTORY = System.getProperty("user.dir");
+	private static final String PRESET_FOLDER = "/_presets";
 	
 	public static void main(String[] args) {
 		launch(args);
@@ -38,7 +39,16 @@ public class Starter extends Application {
 		if (mainWindowUrl == null) {
 			log.error("URL to FXML file is null! Check if the URL in the java code is valid.");
 		} else {
+			createPresetsFolder();
 			createMainWindowGUI(primaryStage, mainWindowUrl).show();
+		}
+	}
+	
+	private void createPresetsFolder() {
+		File presetFolder = new File(PATH_TO_CURRENT_DIRECTORY + PRESET_FOLDER);
+		
+		if (!presetFolder.exists()) {
+			presetFolder.mkdir();
 		}
 	}
 	

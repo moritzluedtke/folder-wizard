@@ -142,7 +142,8 @@
 							   opacity="0"/>
 					</VBox>
 					
-					<JFXButton onMouseClicked="#handleDetailAreaButtonChoosePresetClicked"
+					<JFXButton fx:id="buttonDetailAreaPreset"
+							   onMouseClicked="#handleDetailAreaButtonChoosePresetClicked"
 							   ripplerFill="#bcbcbc" focusTraversable="false">
 						<graphic>
 							<ImageView fitWidth="40" fitHeight="40">
