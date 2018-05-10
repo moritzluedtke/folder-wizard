@@ -1,9 +1,11 @@
 package de.moritzluedtke.folderwizard.service;
 
 import de.moritzluedtke.folderwizard.service.model.CustomTreeItem;
+import de.moritzluedtke.folderwizard.service.model.FmlPreset;
 import de.moritzluedtke.folderwizard.service.model.FolderTreeItem;
 
 import java.io.File;
+import java.util.List;
 
 public class Utils {
 	
@@ -44,5 +46,17 @@ public class Utils {
 		int lastSlash = filePath.lastIndexOf("\\") + 1;
 		
 		return filePath.substring(0, lastSlash);
+	}
+	
+	public int getLengthOfLongestNameFromList(List<FmlPreset> list) {
+		int longestLength = 0;
+		
+		for (FmlPreset item : list) {
+			if (item.getName().length() > longestLength) {
+			    longestLength = item.getName().length();
+			}
+		}
+		
+		return longestLength;
 	}
 }

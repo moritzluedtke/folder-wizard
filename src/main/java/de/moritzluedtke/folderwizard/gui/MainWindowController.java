@@ -235,11 +235,22 @@ public class MainWindowController {
 	}
 	
 	private void updatePresetPopup(List<FmlPreset> presetList) {
-		int listViewSize = popUpListView.getItems().size();
-		popUpListView.getItems().remove(0, listViewSize);
+		int currentListViewSize = popUpListView.getItems().size();
+		popUpListView.getItems().remove(0, currentListViewSize);
 		popUpListView.getItems().addAll(presetList);
 		
+		resizePresetPopupListView(presetList);
+		
 		popUpListView.getSelectionModel().clearSelection();
+	}
+	
+	private void resizePresetPopupListView(List<FmlPreset> presetList) {
+		int listWidth = calculateListWidthBasedOn(presetList);
+		popUpListView.setStyle("-fx-min-width: " + listWidth);
+	}
+	
+	private int calculateListWidthBasedOn(List<FmlPreset> presetList) {
+		return (int) Math.round(utils.getLengthOfLongestNameFromList(presetList) * 6.7) + 30;
 	}
 	
 	private void createPresetPopup() {

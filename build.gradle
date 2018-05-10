@@ -1,5 +1,5 @@
 group 'de.moritzluedtke'
-version 'ALPHA_0.1'
+version 'ALPHA_0.2.1'
 
 apply plugin: 'java'
 

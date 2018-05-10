@@ -3,11 +3,12 @@ package de.moritzluedtke.folderwizard.service.model;
 public class FmlPreset {
 	
 	private String name;
+	private String shortName;
 	private String pathToFml;
 	
 	@Override
 	public String toString() {
-		return name;
+		return name.length() > 34 ? this.name.substring(0, 30) + " . . ." : name;
 	}
 	
 	public FmlPreset withName(String name) {
