@@ -62,14 +62,13 @@ public class MainWindowController {
 			"In these files, the folder structure can be described using a special syntax.\n" +
 			"\n\n" +
 			"Used technologies:\n" +
-			"- Java 8 + JavaFX 2\n" +
+			"- Java 11 + JavaFX 14\n" +
 			"- JFoenix\n" +
 			"- Log4j2\n" +
-			"- Gradle\n" +
-			"- IntelliJ 2018 Community & Professional\n" +
-			"- Bitbucket\n" +
+			"- Maven\n" +
+			"- IntelliJ Ultimate\n" +
 			"\n" +
-			"© 2018 Moritz Lüdtke";
+			"© 2020 Moritz Lüdtke";
 	private static final String INCORRECT_FML_SYNTAX_ERROR_MESSAGE
 			= "Incorrect FML Syntax!\n\n" +
 			"Please check your file, it must not contain:\n" +
@@ -201,13 +200,15 @@ public class MainWindowController {
 	@FXML
 	public void handleDetailAreaButtonChoosePresetClicked(MouseEvent mouseEvent) {
 		List<FmlPreset> presetList = fmlPresetProvider.readAllPresetsFromDisk(INSTALLATION_DIR);
-		updatePresetPopup(presetList);
-		
-		presetPopup.show(buttonDetailAreaPreset,
-				JFXPopup.PopupVPosition.TOP,
-				JFXPopup.PopupHPosition.LEFT,
-				mouseEvent.getX(),
-				mouseEvent.getY());
+		if (!presetList.isEmpty()) {
+			updatePresetPopup(presetList);
+
+			presetPopup.show(buttonDetailAreaPreset,
+							 JFXPopup.PopupVPosition.TOP,
+							 JFXPopup.PopupHPosition.LEFT,
+							 mouseEvent.getX(),
+							 mouseEvent.getY());
+		}
 	}
 	
 	@FXML
