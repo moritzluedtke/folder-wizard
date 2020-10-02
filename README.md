@@ -1,17 +1,18 @@
-#Folder Wizard
-##Bedienungshinweise
+# Folder Wizard
+
+## Bedienungshinweise
+
 Folder Wizard benötigt Java 1.8u60 oder neuer.
 
-Das Programm benötigt eine FML Datei, um daraus die Ordner Struktur zu erzeugen.
-Diese Datei muss mit `*.fml` enden. Eine Beispiel-Datei liegt diesem ZIP-Archiv bei.
+Das Programm benötigt eine FML Datei, um daraus die Ordnerstruktur zu erzeugen.
+Diese Datei muss mit `*.fml` enden.
 
-Wenn man den Header oder das "created by" Label anklickt, wird ein kleiner "About" Dialog angezeigt.
+#### FML Regeln
 
-####FML Regeln
 - Das "Keyword", damit Folder Wizard erkennt, dass die Zeile ein Ordner werden soll, ist das `+`.
-- Jede Zeile, die nicht mit einem oder mehreren `+` anfängt, ist ein Kommentar.
+- Jede Zeile, die nicht mit einem oder mehreren `+` anfängt, ist ein Kommentar und wird für die Ordnerstruktur ignoriert.
 - Die einzelnen Ebenen der Ordnerstruktur werden mit weiteren `+` Zeichen gekennzeichnet, siehe Bsp. unten.
-- Nach jedem Ordner muss eine neue Zeile angefangen werden.
+- Für jeden Ordner muss eine neue Zeile angefangen werden.
 - Die Ordnernamen dürfen nur aus a-z, A-Z, 0-9, _, -, + und einem Leerzeichen bestehen.
 - Alle Zeichen, die auf den ersten Block an `+` Zeichen folgen, werden als Ordnername gewertet.
 - HINWEIS: Folder Wizard prüft automatisch, ob die FML Datei den Syntax- und gängigen Windows Ordner-Erstellungs-Regeln entspricht.
@@ -19,13 +20,15 @@ Wenn man den Header oder das "created by" Label anklickt, wird ein kleiner "Abou
   Zusätzlich prüft Folder Wizard, ob ein "Vorwärtssprung" existiert. Ein Vorwärtsprung liegt vor, 
   wenn in der FML Datei ein Unterordner erstellt wird, der mehr als eine Ebene tiefer liegt.
   Der/die Ordner zwischen diesem und dem vorigen Ordner fehlt/fehlen dann.
-  Ein Beispiel:
-
-  +Ordner
   
+  Ein Beispiel:
+  ```
+  +Ordner
   +++Illegaler Ordner
+  ```
 
-####FML Beispiel
+#### FML Beispiel
+
 ```
 Kommentar
  
@@ -41,5 +44,6 @@ Auch hier ist ein Kommentar möglich
 +Ordner 6
 ```
 
-##Bekannte Beschränkungen
+## Bekannte Beschränkungen
+
 - Man kann nicht den Laufwerksbuchstaben (Bspw. C:\\) als Root Verzeichnis auswählen.
