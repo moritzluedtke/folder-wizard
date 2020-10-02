@@ -12,7 +12,6 @@
 /.gradle
 
 #Other
-*.png
 *.jpg
 /.metadata
 *.fml

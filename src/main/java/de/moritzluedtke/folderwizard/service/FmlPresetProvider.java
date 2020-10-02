@@ -21,13 +21,14 @@ public class FmlPresetProvider {
 	
 	private List<FmlPreset> presetList = new ArrayList<>();
 	
-	
 	private FmlPresetProvider() {
+		presetList.add(new FmlPreset().withName("").andPathToFml(""));
 	}
 	
 	public List<FmlPreset> readAllPresetsFromDisk(String pathToInstallationFolder) {
 		File presetFolder = new File(pathToInstallationFolder + PRESET_FOLDER);
 		
+		//TODO: Weniger ifs, isDirectory() nötig?
 		if (presetFolder.isDirectory()) {
 			Optional<File[]> allFilesList = Optional.ofNullable(presetFolder.listFiles());
 			

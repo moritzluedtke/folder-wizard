@@ -3,7 +3,6 @@ package de.moritzluedtke.folderwizard.service.model;
 public class FmlPreset {
 	
 	private String name;
-	private String shortName;
 	private String pathToFml;
 	
 	@Override
