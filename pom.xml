@@ -11,7 +11,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.release>11</maven.compiler.release>
-        <javafx.version>14</javafx.version>
+        <javafx.version>15</javafx.version>
     </properties>
 
     <dependencies>
@@ -26,24 +26,9 @@
             <version>${javafx.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
-            <version>2.13.3</version>
-        </dependency>
-        <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
             <version>9.0.10</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.12</version>
         </dependency>
     </dependencies>
 
@@ -65,8 +50,16 @@
                     <mainClass>de.moritzluedtke.folderwizard.Starter</mainClass>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.gluonhq</groupId>
+                <artifactId>client-maven-plugin</artifactId>
+                <version>0.1.28</version>
+                <configuration>
+                    <target>host</target>
+                    <mainClass>de.moritzluedtke.folderwizard.Starter</mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-
 
 </project>

@@ -47,3 +47,18 @@ Auch hier ist ein Kommentar möglich
 ## Bekannte Beschränkungen
 
 - Man kann nicht den Laufwerksbuchstaben (Bspw. C:\\) als Root Verzeichnis auswählen.
+
+## DEV Setup
+- Java 11 installiert
+- [GraalVM installieren](https://github.com/graalvm/graalvm-ce-builds/releases)
+- JavaFX kommt über die `pom.xml` mit, dadurch ist keine Installation nötig.
+- Projekt laufen lassen mit: `mvn clean:clean compiler:compile javafx:run -f pom.xml`
+- Projekt bauen in natives Image mit: `mvn clean client:build`
+    - Dafür muss die Variable `GRAALVM_HOME` gesetzt sein und `JAVA_HOME` muss auf `GRAALVM_HOME` zeigen.
+      
+      Beispiel:
+      ```shell script
+      export GRAALVM_HOME=/Library/Java/JavaVirtualMachines/graalvm-ce-java11-20.2.0/Contents/Home
+      export JAVA_HOME=$GRAALVM_HOME
+      ```
+    - Und die Berechtigung gesetzt werden `sudo xattr -r -d com.apple.quarantine /path/to/graalvm`.

@@ -22,8 +22,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javafx.util.Duration;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,8 +29,6 @@ import java.util.List;
 
 @SuppressWarnings("Duplicates")
 public class MainWindowController {
-	
-	private static final Logger log = LogManager.getLogger();
 	
 	private static final String JAVA_FX_CSS_TEXT_FILL = "-fx-text-fill: ";
 	private static final String MESSAGE_TYPE_SUCCESS_COLOR = "#00AA00";
@@ -112,10 +108,10 @@ public class MainWindowController {
 	private String selectedFmlPath = "";
 	private FolderTreeItem rootFolderTreeItem = null;
 	
-	private FmlParser fmlParser = FmlParser.getInstance();
-	private FolderWriter folderWriter = FolderWriter.getInstance();
-	private Utils utils = Utils.getInstance();
-	private FmlPresetProvider fmlPresetProvider = FmlPresetProvider.getInstance();
+	private final FmlParser fmlParser = FmlParser.getInstance();
+	private final FolderWriter folderWriter = FolderWriter.getInstance();
+	private final Utils utils = Utils.getInstance();
+	private final FmlPresetProvider fmlPresetProvider = FmlPresetProvider.getInstance();
 	
 	@FXML
 	private StackPane rootStackPane;
@@ -354,12 +350,12 @@ public class MainWindowController {
 			buttonDetailAreaExecute.setDisable(false);
 			makeFolderTreePreviewVisible();
 		} catch (FMLSyntaxException e) {
-			log.error(e.getMessage());
+//			log.error(e.getMessage());
 			showDialog(INCORRECT_FML_SYNTAX_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
 			
 			textFieldDetailAreaFmlFilePath.setText("");
 		} catch (IOException e) {
-			log.error(e.getMessage());
+//			log.error(e.getMessage());
 			showDialog(IO_EXCEPTION_DURING_FML_LOADING_ERROR_MESSAGE, ERROR_DIALOG_TITLE);
 			
 			textFieldDetailAreaFmlFilePath.setText("");

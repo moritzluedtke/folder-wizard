@@ -9,16 +9,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
 public class Starter extends Application {
-    private static final Logger log = LogManager.getLogger();
-
     private static final int MAIN_WINDOW_WIDTH = 900;
     private static final int MAIN_WINDOW_HEIGHT = 570;
     private static final String GUI_MAIN_LAYOUT_URL = "gui/layout/MainWindow.fxml";
@@ -37,7 +33,7 @@ public class Starter extends Application {
         enableFontSmoothing();
 
         if (mainWindowUrl == null) {
-            log.error("URL to FXML file is null! Check if the URL is valid.");
+            //            log.error("URL to FXML file is null! Check if the URL is valid.");
         } else {
             createPresetsFolder();
             createMainWindowGUI(primaryStage, mainWindowUrl).show();
@@ -68,7 +64,7 @@ public class Starter extends Application {
 
             setWindowIcon(primaryStage);
         } catch (IOException e) {
-            log.error("Can't create primary stage! Might be an invalid URL.\n" + e);
+            //            log.error("Can't create primary stage! Might be an invalid URL.\n" + e);
         }
 
         centerStage(primaryStage);

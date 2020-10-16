@@ -10,10 +10,10 @@ import java.util.List;
 
 public class FmlParser {
 	
-	private static FmlParser instance = new FmlParser();
+	private static final FmlParser instance = new FmlParser();
 	
 	private static final CharSequence FML_KEYWORD = "+";
-	private FmlSyntaxChecker syntaxChecker = FmlSyntaxChecker.getInstance();
+	private final FmlSyntaxChecker syntaxChecker = FmlSyntaxChecker.getInstance();
 	
 	
 	private FmlParser() {

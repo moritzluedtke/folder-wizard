@@ -1,20 +1,17 @@
 package de.moritzluedtke.folderwizard.service;
 
 import de.moritzluedtke.folderwizard.service.model.FmlPreset;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import static java.util.Optional.of;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 public class FmlPresetProvider {
 	
-	private static FmlPresetProvider instance = new FmlPresetProvider();
-	private static final Logger log = LogManager.getLogger();
-	
+	private static final FmlPresetProvider instance = new FmlPresetProvider();
+
 	private static final String DOT = ".";
 	private static final String FML_FILE_ENDING = ".fml";
 	private static final String PRESET_FOLDER = "/_presets";
@@ -22,7 +19,10 @@ public class FmlPresetProvider {
 	private List<FmlPreset> presetList = new ArrayList<>();
 	
 	private FmlPresetProvider() {
-		presetList.add(new FmlPreset().withName("").andPathToFml(""));
+	}
+
+	public static FmlPresetProvider getInstance() {
+		return instance;
 	}
 	
 	public List<FmlPreset> readAllPresetsFromDisk(String pathToInstallationFolder) {
@@ -48,24 +48,15 @@ public class FmlPresetProvider {
 								.andPathToFml(filePath));
 					}
 				}
-				
+
 				this.presetList = presetList;
-				
 			} else {
-				log.info("No presets found!");
+//				log.info("No presets found!");
 			}
 		} else {
-			log.error("This is not a folder (Installation Folder)!");
+//			log.error("This is not a folder (Installation Folder)!");
 		}
 		
-		return presetList;
-	}
-	
-	public static FmlPresetProvider getInstance() {
-		return instance;
-	}
-	
-	public List<FmlPreset> getPresetList() {
 		return presetList;
 	}
 }
