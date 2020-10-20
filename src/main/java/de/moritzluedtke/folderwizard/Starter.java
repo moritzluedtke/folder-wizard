@@ -64,7 +64,7 @@ public class Starter extends Application {
 
             setWindowIcon(primaryStage);
         } catch (IOException e) {
-            //            log.error("Can't create primary stage! Might be an invalid URL.\n" + e);
+            e.printStackTrace();
         }
 
         centerStage(primaryStage);

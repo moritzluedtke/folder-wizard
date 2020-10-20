@@ -53,10 +53,45 @@
             <plugin>
                 <groupId>com.gluonhq</groupId>
                 <artifactId>client-maven-plugin</artifactId>
-                <version>0.1.28</version>
+                <version>0.1.33</version>
                 <configuration>
                     <target>host</target>
                     <mainClass>de.moritzluedtke.folderwizard.Starter</mainClass>
+                    <reflectionList>
+                        <list>com.jfoenix.controls.JFXButton</list>
+                        <list>com.jfoenix.controls.JFXTreeView</list>
+                        <list>com.jfoenix.controls.JFXTextField</list>
+                        <list>com.jfoenix.controls.JFXPopup</list>
+                        <list>com.jfoenix.controls.JFXListView</list>
+                        <list>com.jfoenix.controls.JFXDialog</list>
+                        <list>de.moritzluedtke.folderwizard.gui.MainWindowController</list>
+                        <list>de.moritzluedtke.folderwizard.service.FmlParser</list>
+                        <list>de.moritzluedtke.folderwizard.service.FmlPresetProvider</list>
+                        <list>de.moritzluedtke.folderwizard.service.FolderWriter</list>
+                        <list>de.moritzluedtke.folderwizard.service.Utils</list>
+                        <list>de.moritzluedtke.folderwizard.service.exception.FMLSyntaxException</list>
+                        <list>de.moritzluedtke.folderwizard.service.model.CustomTreeItem</list>
+                        <list>de.moritzluedtke.folderwizard.service.model.FmlPreset</list>
+                        <list>de.moritzluedtke.folderwizard.service.model.FolderTreeItem</list>
+                        <list>javafx.animation.FadeTransition</list>
+                        <list>javafx.animation.TranslateTransition</list>
+                        <list>javafx.util.Duration</list>
+                        <list>java.util.List</list>
+
+<!--                        TODO: Schauen, ob hiervon was gebraucht wird -->
+<!--                        <list>java.io.File</list>-->
+<!--                        <list>java.io.IOException</list>-->
+<!--                        <list>javafx.fxml.FXML</list>-->
+<!--                        <list>javafx.scene.Node</list>-->
+<!--                        <list>javafx.scene.control.Label</list>-->
+<!--                        <list>javafx.scene.input.MouseEvent</list>-->
+<!--                        <list>javafx.scene.layout.Pane</list>-->
+<!--                        <list>javafx.scene.layout.StackPane</list>-->
+<!--                        <list>javafx.scene.layout.VBox</list>-->
+<!--                        <list>javafx.stage.DirectoryChooser</list>-->
+<!--                        <list>javafx.stage.FileChooser</list>-->
+<!--                        <list>javafx.stage.Window</list>-->
+                    </reflectionList>
                 </configuration>
             </plugin>
         </plugins>

@@ -376,7 +376,7 @@ public class MainWindowController {
 	
 	private void clearFMLPath() {
 		textFieldDetailAreaFmlFilePath.setText("");
-		labelDetailAreaFmlFilePathMessage.setOpacity(0);
+		labelDetailAreaFmlFilePathMessage.setVisible(false);
 		selectedFmlPath = "";
 		
 		emptyFolderPreview();
@@ -387,7 +387,7 @@ public class MainWindowController {
 	}
 	
 	private void activateLabel(Label label, String text, MessageType messageType) {
-		label.setOpacity(1);
+		label.setVisible(true);
 		label.setText(text);
 		
 		switch (messageType) {
@@ -403,7 +403,7 @@ public class MainWindowController {
 	private void showDialog(String message, String title) {
 		JFXDialog dialog = new JFXDialog();
 		
-		dialogVBox.setOpacity(1);
+		dialogVBox.setVisible(true);
 		
 		labelDialogContent.setText(message);
 		labelDialogTitle.setText(title);
